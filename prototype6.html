@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能生成证件照 - 微信小程序原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4E6EF2', // 主色调：科技蓝
+                        secondary: '#FF6B6B', // 辅助色：珊瑚红
+                        accent: '#36D7B7', // 强调色：薄荷绿
+                        warning: '#FFC107', // 警告色：琥珀橙
+                        dark: '#1D2A3D', // 深色
+                        medium: '#64748B', // 中灰色
+                        light: '#F8FAFC', // 浅灰色
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.08)',
+                        'medium': '0 4px 15px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.05)',
+                        'strong': '0 8px 30px rgba(0,0,0,0.12), 0 4px 15px rgba(0,0,0,0.06)',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .iphone-frame {
+                width: 407px;
+                height: 812px;
+                border: 16px solid #1A1A1A;
+                border-radius: 40px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            }
+            .iphone-frame::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 160px;
+                height: 26px;
+                background-color: #1A1A1A;
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+            .safe-area-top {
+                padding-top: 44px;
+            }
+            .safe-area-bottom {
+                padding-bottom: 34px;
+            }
+            .app-container {
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .tab-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 50px;
+                background-color: white;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border-top: 1px solid #E5E7EB;
+                z-index: 100;
+            }
+            .tab-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                height: 100%;
+                color: #6B7280;
+            }
+            .tab-item.active {
+                color: #4E6EF2;
+            }
+            .tab-icon {
+                font-size: 20px;
+                margin-bottom: 2px;
+            }
+            .tab-label {
+                font-size: 10px;
+            }
+            .floating-card {
+                position: relative;
+                z-index: 30;
+                background-color: white;
+                border-radius: 16px;
+                box-shadow: var(--tw-shadow-soft);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .floating-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--tw-shadow-medium);
+            }
+            .hero-element {
+                position: relative;
+                z-index: 20;
+            }
+            .background-element {
+                position: absolute;
+                z-index: 10;
+                opacity: 0.8;
+            }
+            .parallax-bg {
+                transition: transform 0.5s ease-out;
+            }
+            .progress-ring-circle {
+                transition: stroke-dashoffset 0.35s;
+                transform: rotate(-90deg);
+                transform-origin: 50% 50%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-4 md:p-8 font-sans">
+    <div class="container mx-auto max-w-[1280px]"> <!-- 限制最大宽度确保一行最多显示3个手机 -->
+        <h1 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-8 text-gray-800">AI智能生成证件照 - 微信小程序原型</h1>
+        <p class="text-center text-gray-600 mb-10">扁平化设计 | Z轴空间概念 | 高保真UI/UX</p>
+
+        <!-- 页面容器 - 第一行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-10">
+            <!-- 启动页面 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-gradient-to-b from-primary to-primary/80 relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="background-element bottom-20 right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4 flex flex-col items-center justify-center h-full">
+                        <!-- Logo -->
+                        <div class="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 hero-element">
+                            <i class="fas fa-camera text-white text-4xl"></i>
+                        </div>
+
+                        <!-- 标题 -->
+                        <h2 class="text-white text-3xl font-bold mb-2 text-center hero-element">证件照AI</h2>
+                        <p class="text-white/90 text-sm mb-10 text-center hero-element">一键生成专业证件照</p>
+
+                        <!-- 开始按钮 -->
+                        <button class="bg-white text-primary font-bold py-3 px-12 rounded-full shadow-medium transform transition hover:scale-105 hero-element">
+                            开始使用
+                        </button>
+
+                        <!-- 底部文字 -->
+                        <p class="text-white/70 text-xs mt-auto mb-8 text-center hero-element">
+                            上传照片，AI自动生成多种规格证件照
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 首页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="font-bold text-gray-800 text-xl">证件照AI</h2>
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                                <img src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                            </div>
+                        </div>
+
+                        <!-- 主要功能区 -->
+                        <div class="floating-card p-6 mb-6 text-center hover:shadow-medium transition-shadow hero-element">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29ufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="证件照示例" class="w-24 h-32 object-cover mx-auto mb-4 rounded border border-gray-200 shadow-soft">
+                            <h3 class="font-bold text-gray-800 mb-2">一键生成专业证件照</h3>
+                            <p class="text-sm text-gray-500 mb-4">上传照片，AI自动处理，多种规格可选</p>
+                            <button class="bg-primary text-white font-medium py-3 px-8 rounded-full shadow-medium transform transition hover:scale-105">
+                                <i class="fas fa-camera mr-2"></i>开始制作
+                            </button>
+                        </div>
+
+                        <!-- 常用规格 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-th-large text-primary mr-2"></i>常用规格
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <div class="floating-card p-3 flex flex-col items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-12 h-16 border-2 border-primary rounded flex items-center justify-center mb-2 bg-primary/5">
+                                    <span class="text-xs font-medium text-primary">1寸</span>
+                                </div>
+                                <span class="text-xs text-gray-700">35×53mm</span>
+                            </div>
+                            <div class="floating-card p-3 flex flex-col items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-12 h-16 border-2 border-primary rounded flex items-center justify-center mb-2 bg-primary/5">
+                                    <span class="text-xs font-medium text-primary">2寸</span>
+                                </div>
+                                <span class="text-xs text-gray-700">41×59mm</span>
+                            </div>
+                            <div class="floating-card p-3 flex flex-col items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-12 h-16 border-2 border-primary rounded flex items-center justify-center mb-2 bg-primary/5">
+                                    <span class="text-xs font-medium text-primary">小2寸</span>
+                                </div>
+                                <span class="text-xs text-gray-700">33×48mm</span>
+                            </div>
+                        </div>
+
+                        <!-- 最近生成 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-history text-primary mr-2"></i>最近生成
+                        </h3>
+                        <div class="floating-card overflow-hidden mb-6 shadow-soft">
+                            <div class="p-3 border-b border-gray-100">
+                                <p class="text-sm font-medium text-gray-700">无最近生成的证件照</p>
+                            </div>
+                            <div class="p-4 text-center">
+                                <i class="fas fa-image text-gray-300 text-4xl mb-3"></i>
+                                <p class="text-sm text-gray-500">您还没有生成过证件照</p>
+                                <p class="text-xs text-gray-400 mt-1">点击上方"开始制作"按钮创建您的第一张证件照</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-images"></i></div>
+                            <div class="tab-label">我的作品</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                            <div class="tab-label">设置</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 上传照片页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-10 -mb-10"></div>
+                    <div class="background-element top-0 left-0 w-64 h-64 bg-accent/5 rounded-full -ml-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">上传照片</h2>
+                            <div class="w-8"></div> <!-- 占位符保持标题居中 -->
+                        </div>
+
+                        <!-- 照片上传区域 -->
+                        <div class="floating-card p-6 text-center mb-6 hover:shadow-medium transition-shadow hero-element">
+                            <div class="w-full h-64 bg-gray-50 rounded-xl mb-4 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center relative overflow-hidden">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-4xl mb-3"></i>
+                                <p class="text-sm text-gray-600 mb-2">点击或拖拽照片到此处上传</p>
+                                <p class="text-xs text-gray-400">支持JPG、PNG格式，大小不超过5MB</p>
+                                <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <button class="floating-card p-3 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                    <i class="fas fa-camera text-primary text-xl mb-2"></i>
+                                    <span class="text-sm text-gray-700">拍照</span>
+                                </button>
+                                <button class="floating-card p-3 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                    <i class="fas fa-image text-primary text-xl mb-2"></i>
+                                    <span class="text-sm text-gray-700">从相册选择</span>
+                                </button>
+                            </div>
+
+                            <p class="text-xs text-gray-500 text-left">
+                                <i class="fas fa-exclamation-circle text-warning mr-1"></i>
+                                请上传正面免冠照片，背景尽量简洁，光线均匀
+                            </p>
+                        </div>
+
+                        <!-- 示例照片 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-lightbulb text-primary mr-2"></i>样例参考
+                        </h3>
+                        <div class="grid grid-cols-3 gap-2 mb-6">
+                            <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照示例1" class="w-full h-24 object-cover rounded shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBlcnNvbiUyMHBob3RvfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="证件照示例2" class="w-full h-24 object-cover rounded shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1583422409837-77a43962676f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照示例3" class="w-full h-24 object-cover rounded shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                        </div>
+
+                        <!-- 下一步按钮 -->
+                        <button class="w-full bg-gray-200 text-gray-400 font-medium py-3 rounded-full shadow-soft disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            下一步
+                        </button>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面容器 - 第二行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            <!-- 证件照生成页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-warning/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">证件照生成</h2>
+                            <div class="w-8"></div> <!-- 占位符保持标题居中 -->
+                        </div>
+
+                        <!-- 进度显示 -->
+                        <div class="flex flex-col items-center mb-8">
+                            <div class="relative w-32 h-32 mb-4">
+                                <svg class="w-full h-full" viewBox="0 0 100 100">
+                                    <circle class="text-gray-100" stroke-width="8" stroke="currentColor" fill="transparent" r="44" cx="50" cy="50"/>
+                                    <circle class="progress-ring-circle text-primary" stroke-width="8" stroke="currentColor" fill="transparent" r="44" cx="50" cy="50" stroke-dasharray="276.46" stroke-dashoffset="69.115"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                    <span class="text-2xl font-bold text-gray-800">75%</span>
+                                    <span class="text-xs text-gray-500">已完成</span>
+                                </div>
+                            </div>
+                            <h3 class="font-medium text-gray-800 mb-1">AI正在处理您的照片</h3>
+                            <p class="text-sm text-gray-500">请稍候，正在优化人像和背景...</p>
+                        </div>
+
+                        <!-- 处理步骤 -->
+                        <div class="space-y-3 mb-8">
+                            <div class="floating-card p-3 flex items-center shadow-soft">
+                                <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <p class="text-sm font-medium text-gray-800">人脸检测</p>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-1">
+                                        <div class="bg-accent h-1.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-card p-3 flex items-center shadow-soft">
+                                <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <p class="text-sm font-medium text-gray-800">背景去除</p>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-1">
+                                        <div class="bg-accent h-1.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-card p-3 flex items-center shadow-soft">
+                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white mr-3 flex-shrink-0">
+                                    <i class="fas fa-spinner fa-spin text-xs"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <p class="text-sm font-medium text-gray-800">证件照优化</p>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-1">
+                                        <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-card p-3 flex items-center shadow-soft opacity-50">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-3 flex-shrink-0">
+                                    <i class="fas fa-clock text-xs"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <p class="text-sm font-medium text-gray-800">格式生成</p>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-1">
+                                        <div class="bg-gray-300 h-1.5 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 提示信息 -->
+                        <div class="floating-card p-4 bg-blue-50 border border-blue-100 text-sm text-blue-700 rounded-lg shadow-soft">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            AI处理过程通常需要10-30秒，请耐心等待
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+
+            <!-- 证件照编辑页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -ml-10 -mb-10"></div>
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">编辑证件照</h2>
+                            <button class="text-primary font-medium text-sm hover:underline">
+                                保存
+                            </button>
+                        </div>
+
+                        <!-- 证件照预览 -->
+                        <div class="flex justify-center mb-6">
+                            <div class="floating-card p-6 bg-gray-100 relative shadow-medium hero-element">
+                                <div class="w-40 h-52 bg-white border-2 border-gray-300 mx-auto overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照预览" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 border-4 border-transparent"></div> <!-- 用于拖拽调整 -->
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="text-xs text-gray-500">1寸 (35×53mm)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 编辑选项 -->
+                        <div class="space-y-4 mb-6">
+                            <!-- 背景颜色 -->
+                            <div class="floating-card p-4 shadow-soft">
+                                <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-fill-drip text-primary mr-2"></i>背景颜色
+                                </h3>
+                                <div class="flex space-x-3">
+                                    <button class="w-8 h-8 rounded-full bg-white border-2 border-primary"></button>
+                                    <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-red-600 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-gray-300 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-green-600 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-yellow-600 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-purple-600 border-2 border-transparent"></button>
+                                    <button class="w-8 h-8 rounded-full bg-pink-600 border-2 border-transparent"></button>
+                                </div>
+                            </div>
+
+                            <!-- 证件照规格 -->
+                            <div class="floating-card p-4 shadow-soft">
+                                <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-ruler text-primary mr-2"></i>证件照规格
+                                </h3>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="py-2 bg-primary text-white text-xs rounded-lg font-medium shadow-soft">1寸 (35×53mm)</button>
+                                    <button class="py-2 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium hover:bg-gray-200 transition-colors shadow-soft">2寸 (41×59mm)</button>
+                                    <button class="py-2 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium hover:bg-gray-200 transition-colors shadow-soft">小2寸 (33×48mm)</button>
+                                    <button class="py-2 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium hover:bg-gray-200 transition-colors shadow-soft">身份证 (35×45mm)</button>
+                                    <button class="py-2 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium hover:bg-gray-200 transition-colors shadow-soft">护照 (45×35mm)</button>
+                                    <button class="py-2 bg-gray-100 text-gray-700 text-xs rounded-lg font-medium hover:bg-gray-200 transition-colors shadow-soft">更多</button>
+                                </div>
+                            </div>
+
+                            <!-- 美颜选项 -->
+                            <div class="floating-card p-4 shadow-soft">
+                                <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-magic text-primary mr-2"></i>美颜调整
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs text-gray-700">磨皮</span>
+                                            <span class="text-xs text-gray-500">50%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs text-gray-700">美白</span>
+                                            <span class="text-xs text-gray-500">40%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs text-gray-700">瘦脸</span>
+                                            <span class="text-xs text-gray-500">30%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+
+            <!-- 预览和保存页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -ml-10 -mt-10"></div>
+                    <div class="background-element bottom-0 right-0 w-64 h-64 bg-warning/5 rounded-full -mr-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">预览与保存</h2>
+                            <div class="w-8"></div> <!-- 占位符保持标题居中 -->
+                        </div>
+
+                        <!-- 证件照预览 -->
+                        <div class="flex justify-center mb-6">
+                            <div class="floating-card p-6 bg-white shadow-medium hero-element">
+                                <div class="w-40 h-52 bg-white border-2 border-gray-300 mx-auto overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照预览" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="text-sm font-medium text-gray-800">1寸证件照 (35×53mm)</span>
+                                    <p class="text-xs text-gray-500 mt-1">白色背景</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 保存选项 -->
+                        <div class="space-y-4 mb-8">
+                            <div class="floating-card p-4 shadow-soft">
+                                <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-download text-primary mr-2"></i>保存到相册
+                                </h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="floating-card p-3 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                        <i class="fas fa-image text-primary mr-2"></i>
+                                        <span class="text-sm text-gray-700">原图</span>
+                                    </button>
+                                    <button class="floating-card p-3 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                        <i class="fas fa-compress-alt text-primary mr-2"></i>
+                                        <span class="text-sm text-gray-700">压缩版</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="floating-card p-4 shadow-soft">
+                                <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-print text-primary mr-2"></i>打印选项
+                                </h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="floating-card p-3 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                        <i class="fas fa-file-image text-primary mr-2"></i>
+                                        <span class="text-sm text-gray-700">标准排版</span>
+                                    </button>
+                                    <button class="floating-card p-3 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-soft">
+                                        <i class="fas fa-th text-primary mr-2"></i>
+                                        <span class="text-sm text-gray-700">多版排版</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="floating-card p-4 bg-yellow-50 border border-yellow-100 shadow-soft">
+                                <h3 class="font-medium text-yellow-700 mb-2 flex items-center">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>保存提示
+                                </h3>
+                                <p class="text-xs text-yellow-700">
+                                    保存后的证件照将保存在您的手机相册中，您可以随时查看和使用。我们建议您同时保存原图和压缩版，以便满足不同场景的需求。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 保存按钮 -->
+                        <button class="w-full bg-primary text-white font-medium py-3 rounded-full shadow-medium transform transition hover:scale-105">
+                            保存证件照
+                        </button>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面容器 - 第三行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            <!-- 我的作品页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -ml-10 -mb-10"></div>
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full -mr-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="font-bold text-gray-800 text-xl">我的作品</h2>
+                            <button class="bg-primary/10 text-primary p-2 rounded-full hover:bg-primary/20 transition-colors">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- 作品列表 -->
+                        <div class="space-y-4 mb-6">
+                            <div class="floating-card overflow-hidden shadow-soft hover:shadow-medium transition-shadow">
+                                <div class="p-4 flex items-center">
+                                    <div class="w-16 h-20 bg-gray-100 rounded overflow-hidden mr-3 flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照作品" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="font-medium text-gray-800">1寸证件照</h4>
+                                        <p class="text-xs text-gray-500 mb-1">白色背景 | 35×53mm</p>
+                                        <p class="text-xs text-gray-400">2023-06-15 14:30</p>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-primary transition-colors ml-2">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="floating-card overflow-hidden shadow-soft hover:shadow-medium transition-shadow">
+                                <div class="p-4 flex items-center">
+                                    <div class="w-16 h-20 bg-gray-100 rounded overflow-hidden mr-3 flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBlcnNvbiUyMHBob3RvfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="证件照作品" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="font-medium text-gray-800">2寸证件照</h4>
+                                        <p class="text-xs text-gray-500 mb-1">蓝色背景 | 41×59mm</p>
+                                        <p class="text-xs text-gray-400">2023-06-10 09:15</p>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-primary transition-colors ml-2">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="floating-card overflow-hidden shadow-soft hover:shadow-medium transition-shadow">
+                                <div class="p-4 flex items-center">
+                                    <div class="w-16 h-20 bg-gray-100 rounded overflow-hidden mr-3 flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1583422409837-77a43962676f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cGVyc29uJTIwcGhvdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="证件照作品" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="font-medium text-gray-800">身份证照片</h4>
+                                        <p class="text-xs text-gray-500 mb-1">白色背景 | 35×45mm</p>
+                                        <p class="text-xs text-gray-400">2023-06-05 16:45</p>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-primary transition-colors ml-2">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 空状态提示 (当没有作品时显示) -->
+                        <!-- <div class="floating-card p-6 text-center shadow-soft">
+                            <i class="fas fa-images text-gray-300 text-4xl mb-3"></i>
+                            <p class="text-sm text-gray-500">您还没有保存的证件照</p>
+                            <p class="text-xs text-gray-400 mt-1">生成并保存证件照后，将在这里显示</p>
+                            <button class="mt-4 bg-primary text-white text-sm font-medium py-2 px-6 rounded-full shadow-medium hover:bg-primary/90 transition-colors">
+                                立即制作
+                            </button>
+                        </div> -->
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-images"></i></div>
+                            <div class="tab-label">我的作品</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                            <div class="tab-label">设置</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设置页面 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-warning/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="font-bold text-gray-800 text-xl">设置</h2>
+                            <div class="w-8"></div> <!-- 占位符保持标题居中 -->
+                        </div>
+
+                        <!-- 用户信息 -->
+                        <div class="floating-card p-4 mb-6 flex items-center shadow-soft">
+                            <img src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-3">
+                            <div class="flex-grow">
+                                <h4 class="font-medium text-gray-800">用户昵称</h4>
+                                <p class="text-xs text-gray-500">点击编辑个人信息</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+
+                        <!-- 设置选项 -->
+                        <div class="space-y-2 mb-6">
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">图片质量设置</h4>
+                                    <p class="text-xs text-gray-500">调整生成证件照的质量</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-3">
+                                    <i class="fas fa-color"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">默认背景颜色</h4>
+                                    <p class="text-xs text-gray-500">设置常用的背景颜色</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent mr-3">
+                                    <i class="fas fa-magic"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">美颜默认参数</h4>
+                                    <p class="text-xs text-gray-500">设置默认的美颜级别</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning mr-3">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">隐私设置</h4>
+                                    <p class="text-xs text-gray-500">控制照片的存储和使用</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 mr-3">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">帮助与反馈</h4>
+                                    <p class="text-xs text-gray-500">获取帮助或提交反馈</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 mr-3">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">关于我们</h4>
+                                    <p class="text-xs text-gray-500">了解更多关于证件照AI</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-images"></i></div>
+                            <div class="tab-label">我的作品</div>
+                        </div>
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                            <div class="tab-label">设置</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 空白占位 -->
+            <div class="iphone-frame mx-auto flex items-center justify-center bg-gray-100">
+                <div class="text-center p-6">
+                    <i class="fas fa-image text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-sm text-gray-500">更多页面可以在此处添加</p>
+                    <p class="text-xs text-gray-400 mt-1">如用户协议、隐私政策等</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加滚动视差效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const appContainers = document.querySelectorAll('.app-container');
+
+            appContainers.forEach(container => {
+                const bgElements = container.querySelectorAll('.background-element');
+                const parallaxBgs = container.querySelectorAll('.parallax-bg');
+
+                container.addEventListener('scroll', function() {
+                    const scrollY = this.scrollTop;
+
+                    // 背景元素视差效果
+                    bgElements.forEach((el, index) => {
+                        const speed = 0.05 * (index + 1);
+                        el.style.transform = `translateY(${scrollY * speed}px)`;
+                    });
+
+                    // 视差背景效果
+                    parallaxBgs.forEach((el, index) => {
+                        const speed = 0.1 * (index + 1);
+                        el.style.transform = `translateY(${scrollY * speed}px)`;
+                    });
+                });
+            });
+
+            // 添加卡片悬停效果
+            const floatingCards = document.querySelectorAll('.floating-card');
+            floatingCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.05)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.08)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

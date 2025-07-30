@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI学习助手 - 微信小程序原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5E7CE0', // 主色调：科技蓝
+                        secondary: '#FF7D6E', // 辅助色：珊瑚橙
+                        accent: '#46CFCB', // 强调色：薄荷蓝
+                        warning: '#FFC107', // 警告色：琥珀黄
+                        success: '#4CAF50', // 成功色：绿色
+                        dark: '#1E293B', // 深色
+                        medium: '#64748B', // 中灰色
+                        light: '#F8FAFC', // 浅灰色
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.08)',
+                        'medium': '0 4px 15px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.05)',
+                        'strong': '0 8px 30px rgba(0,0,0,0.12), 0 4px 15px rgba(0,0,0,0.06)',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .iphone-frame {
+                width: 407px;
+                height: 812px;
+                border: 16px solid #1A1A1A;
+                border-radius: 40px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            }
+            .iphone-frame::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 160px;
+                height: 26px;
+                background-color: #1A1A1A;
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+            .safe-area-top {
+                padding-top: 44px;
+            }
+            .safe-area-bottom {
+                padding-bottom: 34px;
+            }
+            .app-container {
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .tab-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 50px;
+                background-color: white;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border-top: 1px solid #E5E7EB;
+                z-index: 100;
+            }
+            .tab-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                height: 100%;
+                color: #6B7280;
+            }
+            .tab-item.active {
+                color: #5E7CE0;
+            }
+            .tab-icon {
+                font-size: 20px;
+                margin-bottom: 2px;
+            }
+            .tab-label {
+                font-size: 10px;
+            }
+            .floating-card {
+                position: relative;
+                z-index: 30;
+                background-color: white;
+                border-radius: 16px;
+                box-shadow: var(--tw-shadow-soft);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .floating-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--tw-shadow-medium);
+            }
+            .hero-element {
+                position: relative;
+                z-index: 20;
+            }
+            .background-element {
+                position: absolute;
+                z-index: 10;
+                opacity: 0.8;
+            }
+            .parallax-bg {
+                transition: transform 0.5s ease-out;
+            }
+            .blur-bg {
+                backdrop-filter: blur(8px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-4 md:p-8 font-sans">
+    <div class="container mx-auto max-w-[1280px]"> <!-- 限制最大宽度确保一行最多显示3个手机 -->
+        <h1 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-8 text-gray-800">AI学习助手 - 微信小程序原型</h1>
+        <p class="text-center text-gray-600 mb-10">扁平化设计 | Z轴空间概念 | 高保真UI/UX</p>
+
+        <!-- 页面容器 - 第一行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-10">
+            <!-- 启动页面 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-gradient-to-b from-primary to-primary/80 relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="background-element bottom-20 right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4 flex flex-col items-center justify-center h-full">
+                        <!-- Logo -->
+                        <div class="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 hero-element">
+                            <i class="fas fa-brain text-white text-4xl"></i>
+                        </div>
+
+                        <!-- 标题 -->
+                        <h2 class="text-white text-3xl font-bold mb-2 text-center hero-element">AI学习助手</h2>
+                        <p class="text-white/90 text-sm mb-10 text-center hero-element">智能解题 · 高效整理</p>
+
+                        <!-- 开始按钮 -->
+                        <button class="bg-white text-primary font-bold py-3 px-12 rounded-full shadow-medium transform transition hover:scale-105 hero-element">
+                            开始使用
+                        </button>
+
+                        <!-- 底部文字 -->
+                        <p class="text-white/70 text-xs mt-auto mb-8 text-center hero-element">
+                            拍照解题，AI精准解答，智能整理学习笔记
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 首页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="font-bold text-gray-800 text-xl">AI学习助手</h2>
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                                <img src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="floating-card p-3 mb-6 flex items-center bg-gray-50 shadow-soft hero-element">
+                            <i class="fas fa-search text-gray-400 mr-2"></i>
+                            <input type="text" placeholder="搜索题目、知识点..." class="flex-grow bg-transparent outline-none text-sm">
+                            <button class="text-primary hover:text-primary/80 transition-colors">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+
+                        <!-- 主要功能区 -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="floating-card p-4 text-center hover:shadow-medium transition-shadow bg-gradient-to-br from-primary/5 to-primary/10 hero-element">
+                                <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-2">
+                                    <i class="fas fa-camera text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm">拍照解题</h3>
+                            </div>
+                            <div class="floating-card p-4 text-center hover:shadow-medium transition-shadow bg-gradient-to-br from-secondary/5 to-secondary/10 hero-element">
+                                <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mx-auto mb-2">
+                                    <i class="fas fa-book-open text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm">题目库</h3>
+                            </div>
+                            <div class="floating-card p-4 text-center hover:shadow-medium transition-shadow bg-gradient-to-br from-accent/5 to-accent/10 hero-element">
+                                <div class="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center text-accent mx-auto mb-2">
+                                    <i class="fas fa-sticky-note text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm">学习笔记</h3>
+                            </div>
+                            <div class="floating-card p-4 text-center hover:shadow-medium transition-shadow bg-gradient-to-br from-warning/5 to-warning/10 hero-element">
+                                <div class="w-14 h-14 rounded-full bg-warning/10 flex items-center justify-center text-warning mx-auto mb-2">
+                                    <i class="fas fa-robot text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm">AI对话</h3>
+                            </div>
+                        </div>
+
+                        <!-- 最近解题 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-history text-primary mr-2"></i>最近解题
+                        </h3>
+                        <div class="floating-card overflow-hidden mb-6 shadow-soft">
+                            <div class="p-3 border-b border-gray-100 flex justify-between items-center">
+                                <p class="text-sm font-medium text-gray-700">最近7天</p>
+                                <button class="text-xs text-primary hover:underline">查看全部</button>
+                            </div>
+                            <div class="divide-y divide-gray-100">
+                                <div class="p-3 hover:bg-gray-50 transition-colors">
+                                    <p class="text-xs text-gray-500 mb-1">数学 · 昨天 19:30</p>
+                                    <p class="text-sm text-gray-800 mb-1 line-clamp-1">已知二次函数 y = ax² + bx + c 的图像过点 (1, 2), (2, 3), (3, 6)，求 a, b, c 的值。</p>
+                                    <div class="flex justify-between items-center mt-1">
+                                        <span class="text-xs text-success"><i class="fas fa-check-circle mr-1"></i>已解决</span>
+                                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="p-3 hover:bg-gray-50 transition-colors">
+                                    <p class="text-xs text-gray-500 mb-1">物理 · 昨天 16:45</p>
+                                    <p class="text-sm text-gray-800 mb-1 line-clamp-1">一个质量为2kg的物体，在水平拉力F的作用下，在粗糙水平面上运动，已知动摩擦因数μ=0.2，求物体的加速度。</p>
+                                    <div class="flex justify-between items-center mt-1">
+                                        <span class="text-xs text-success"><i class="fas fa-check-circle mr-1"></i>已解决</span>
+                                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="p-3 hover:bg-gray-50 transition-colors">
+                                    <p class="text-xs text-gray-500 mb-1">化学 · 前天 14:20</p>
+                                    <p class="text-sm text-gray-800 mb-1 line-clamp-1">写出实验室制取氧气的三种方法的化学方程式。</p>
+                                    <div class="flex justify-between items-center mt-1">
+                                        <span class="text-xs text-success"><i class="fas fa-check-circle mr-1"></i>已解决</span>
+                                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 学习数据 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-chart-line text-primary mr-2"></i>学习数据
+                        </h3>
+                        <div class="floating-card p-4 shadow-soft mb-6">
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="text-center p-2 bg-gray-50 rounded-lg">
+                                    <p class="text-xs text-gray-500 mb-1">本周解题</p>
+                                    <p class="text-lg font-bold text-gray-800">24</p>
+                                </div>
+                                <div class="text-center p-2 bg-gray-50 rounded-lg">
+                                    <p class="text-xs text-gray-500 mb-1">正确率</p>
+                                    <p class="text-lg font-bold text-success">85%</p>
+                                </div>
+                                <div class="text-center p-2 bg-gray-50 rounded-lg">
+                                    <p class="text-xs text-gray-500 mb-1">笔记数量</p>
+                                    <p class="text-lg font-bold text-gray-800">12</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-camera"></i></div>
+                            <div class="tab-label">解题</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-sticky-note"></i></div>
+                            <div class="tab-label">笔记</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-user"></i></div>
+                            <div class="tab-label">我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 拍照解题页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-10 -mb-10"></div>
+                    <div class="background-element top-0 left-0 w-64 h-64 bg-accent/5 rounded-full -ml-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">拍照解题</h2>
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button class="text-primary hover:text-primary/80 transition-colors">
+                                    <i class="fas fa-lightbulb"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 相机预览区域 -->
+                        <div class="floating-card aspect-[3/4] bg-gray-900 rounded-xl mb-6 relative overflow-hidden shadow-medium hero-element">
+                            <!-- 模拟相机预览 -->
+                            <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80" alt="相机预览" class="w-full h-full object-cover opacity-80">
+
+                            <!-- 扫描框 -->
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-1/3 border-2 border-white flex items-center justify-center">
+                                <div class="w-full h-px bg-white animate-scan"></div>
+                            </div>
+
+                            <!-- 提示文字 -->
+                            <div class="absolute bottom-16 left-0 right-0 text-center text-white text-sm">
+                                请将题目放入框内，保持清晰
+                            </div>
+
+                            <!-- 相机按钮 -->
+                            <div class="absolute bottom-6 left-0 right-0 flex justify-center">
+                                <button class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg transform transition hover:scale-105 active:scale-95">
+                                    <i class="fas fa-camera text-gray-800"></i>
+                                </button>
+                            </div>
+
+                            <!-- 闪光灯按钮 -->
+                            <div class="absolute bottom-8 right-6 bg-black/30 blur-bg w-8 h-8 rounded-full flex items-center justify-center text-white">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                        </div>
+
+                        <!-- 解题历史 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-history text-primary mr-2"></i>解题历史
+                        </h3>
+                        <div class="grid grid-cols-4 gap-2 mb-6">
+                            <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" alt="解题历史1" class="w-full aspect-square object-cover rounded-lg border border-gray-100 shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" alt="解题历史2" class="w-full aspect-square object-cover rounded-lg border border-gray-100 shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" alt="解题历史3" class="w-full aspect-square object-cover rounded-lg border border-gray-100 shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" alt="解题历史4" class="w-full aspect-square object-cover rounded-lg border border-gray-100 shadow-soft hover:opacity-80 transition-opacity cursor-pointer">
+                        </div>
+
+                        <!-- 提示信息 -->
+                        <div class="floating-card p-3 bg-blue-50 border border-blue-100 rounded-lg shadow-soft text-sm text-blue-700 mb-6">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            支持数学、物理、化学等多学科题目识别与解答
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-camera"></i></div>
+                            <div class="tab-label">解题</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-sticky-note"></i></div>
+                            <div class="tab-label">笔记</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-user"></i></div>
+                            <div class="tab-label">我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面容器 - 第二行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-10">
+            <!-- 题目详情页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-warning/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">题目详情</h2>
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 题目信息 -->
+                        <div class="floating-card p-4 mb-6 shadow-soft">
+                            <div class="flex items-center mb-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2">数学</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded mr-2">二次函数</span>
+                                <span class="text-xs text-gray-500 ml-auto">难度: 中等</span>
+                            </div>
+                            <div class="mb-4">
+                                <p class="text-gray-800 mb-3">已知二次函数 y = ax² + bx + c 的图像过点 (1, 2), (2, 3), (3, 6)，求 a, b, c 的值。</p>
+                                <img src="https://images.unsplash.com/photo-1580894944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80" alt="题目图片" class="w-full h-auto rounded-lg border border-gray-100 mb-3">
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span class="mr-3"><i class="fas fa-eye mr-1"></i> 1245</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i> 87</span>
+                            </div>
+                        </div>
+
+                        <!-- 解答区域 -->
+                        <div class="floating-card p-4 mb-6 shadow-soft">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-gray-800 flex items-center">
+                                    <i class="fas fa-lightbulb text-primary mr-2"></i>AI解答
+                                </h3>
+                                <button class="text-primary text-sm hover:underline">查看更多解答</button>
+                            </div>
+                            <div class="text-gray-800 space-y-3 text-sm">
+                                <p><strong>解：</strong>已知二次函数 y = ax² + bx + c 的图像过点 (1, 2), (2, 3), (3, 6)，将这些点代入函数表达式可得方程组：</p>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 font-mono text-xs">
+                                    a(1)² + b(1) + c = 2<br>
+                                    a(2)² + b(2) + c = 3<br>
+                                    a(3)² + b(3) + c = 6
+                                </div>
+                                <p>化简得：</p>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 font-mono text-xs">
+                                    a + b + c = 2  ...(1)<br>
+                                    4a + 2b + c = 3  ...(2)<br>
+                                    9a + 3b + c = 6  ...(3)
+                                </div>
+                                <p>用消元法解这个方程组：</p>
+                                <p>(2) - (1) 得：3a + b = 1  ...(4)</p>
+                                <p>(3) - (2) 得：5a + b = 3  ...(5)</p>
+                                <p>(5) - (4) 得：2a = 2，所以 a = 1</p>
+                                <p>将 a = 1 代入 (4) 得：3(1) + b = 1，所以 b = -2</p>
+                                <p>将 a = 1, b = -2 代入 (1) 得：1 - 2 + c = 2，所以 c = 3</p>
+                                <p>因此，a = 1, b = -2, c = 3</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-gray-100">
+                                <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                    <i class="fas fa-clipboard-list text-primary mr-2"></i>知识点总结
+                                </h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">二次函数</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">方程组求解</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">代入法</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">消元法</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 相关推荐 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-thumbs-up text-primary mr-2"></i>相关推荐
+                        </h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="floating-card p-3 hover:bg-gray-50 transition-colors shadow-soft">
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-1">已知二次函数 y = 2x² - 4x + 1，求其顶点坐标和对称轴。</p>
+                                <span class="text-xs text-gray-500">数学 · 二次函数</span>
+                            </div>
+                            <div class="floating-card p-3 hover:bg-gray-50 transition-colors shadow-soft">
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-1">求二次函数 y = -x² + 6x - 8 的最大值及对应的 x 值。</p>
+                                <span class="text-xs text-gray-500">数学 · 二次函数</span>
+                            </div>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div class="flex gap-3">
+                            <button class="flex-1 bg-primary text-white font-medium py-3 rounded-full shadow-medium hover:bg-primary/90 transition-colors">
+                                加入笔记
+                            </button>
+                            <button class="flex-1 bg-white text-primary border border-primary font-medium py-3 rounded-full shadow-soft hover:bg-primary/5 transition-colors">
+                                再拍一题
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+
+            <!-- 题目库页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -ml-10 -mb-10"></div>
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">题目库</h2>
+                            <div class="w-8"></div> <!-- 占位符保持标题居中 -->
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="floating-card p-3 mb-6 flex items-center bg-gray-50 shadow-soft">
+                            <i class="fas fa-search text-gray-400 mr-2"></i>
+                            <input type="text" placeholder="搜索题目、知识点..." class="flex-grow bg-transparent outline-none text-sm">
+                        </div>
+
+                        <!-- 分类标签 -->
+                        <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide space-x-2">
+                            <button class="px-3 py-1 bg-primary text-white text-sm font-medium rounded-full whitespace-nowrap shadow-soft">全部</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">数学</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">物理</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">化学</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">生物</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">英语</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">语文</button>
+                        </div>
+
+                        <!-- 题目列表 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-fire text-primary mr-2"></i>热门题目
+                        </h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="floating-card p-4 hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2">数学</span>
+                                    <span class="text-xs text-gray-500 ml-auto">难度: 中等</span>
+                                </div>
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-2">已知二次函数 y = ax² + bx + c 的图像过点 (1, 2), (2, 3), (3, 6)，求 a, b, c 的值。</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-eye mr-1"></i> 1245</span>
+                                    <button class="text-primary hover:underline">查看解答</button>
+                                </div>
+                            </div>
+                            <div class="floating-card p-4 hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded mr-2">物理</span>
+                                    <span class="text-xs text-gray-500 ml-auto">难度: 较难</span>
+                                </div>
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-2">一个质量为2kg的物体，在水平拉力F的作用下，在粗糙水平面上运动，已知动摩擦因数μ=0.2，求物体的加速度。</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-eye mr-1"></i> 987</span>
+                                    <button class="text-primary hover:underline">查看解答</button>
+                                </div>
+                            </div>
+                            <div class="floating-card p-4 hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded mr-2">化学</span>
+                                    <span class="text-xs text-gray-500 ml-auto">难度: 简单</span>
+                                </div>
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-2">写出实验室制取氧气的三种方法的化学方程式。</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-eye mr-1"></i> 1562</span>
+                                    <button class="text-primary hover:underline">查看解答</button>
+                                </div>
+                            </div>
+                            <div class="floating-card p-4 hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded mr-2">生物</span>
+                                    <span class="text-xs text-gray-500 ml-auto">难度: 中等</span>
+                                </div>
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-2">简述DNA复制的过程和特点。</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-eye mr-1"></i> 876</span>
+                                    <button class="text-primary hover:underline">查看解答</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 更多题目 -->
+                        <div class="text-center">
+                            <button class="px-6 py-2 border border-primary text-primary rounded-full text-sm font-medium hover:bg-primary/5 transition-colors shadow-soft">
+                                加载更多题目
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-camera"></i></div>
+                            <div class="tab-label">解题</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-sticky-note"></i></div>
+                            <div class="tab-label">笔记</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-user"></i></div>
+                            <div class="tab-label">我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学习笔记页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -ml-10 -mt-10"></div>
+                    <div class="background-element bottom-0 right-0 w-64 h-64 bg-warning/5 rounded-full -mr-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">学习笔记</h2>
+                            <button class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors shadow-soft">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="floating-card p-3 mb-6 flex items-center bg-gray-50 shadow-soft">
+                            <i class="fas fa-search text-gray-400 mr-2"></i>
+                            <input type="text" placeholder="搜索笔记..." class="flex-grow bg-transparent outline-none text-sm">
+                        </div>
+
+                        <!-- 分类标签 -->
+                        <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide space-x-2">
+                            <button class="px-3 py-1 bg-primary text-white text-sm font-medium rounded-full whitespace-nowrap shadow-soft">全部</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">数学</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">物理</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">化学</button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full whitespace-nowrap shadow-soft hover:bg-gray-200 transition-colors">生物</button>
+                        </div>
+
+                        <!-- 笔记列表 -->
+                        <div class="space-y-3 mb-6">
+                            <div class="floating-card p-4 hover:shadow-medium transition-shadow">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2">数学</span>
+                                    <span class="text-xs text-gray-500 ml-auto">2023-06-15</span>
+                                </div>
+                                <h3 class="font-medium text-gray-800 mb-1">二次函数知识点总结</h3>
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-2">二次函数的一般形式为 y = ax² + bx + c，其中 a, b, c 为常数，且 a ≠ 0。二次函数的图像是一条抛物线...</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-file-alt mr-1"></i> 3个知识点</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="floating-card p-4 hover:shadow-medium transition-shadow">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded mr-2">物理</span>
+                                    <span class="text-xs text-gray-500 ml-auto">2023-06-10</span>
+                                </div>
+                                <h3 class="font-medium text-gray-800 mb-1">牛顿运动定律应用</h3>
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-2">牛顿第一定律：一切物体总保持匀速直线运动状态或静止状态，直到有外力迫使它改变这种状态为止...</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-file-alt mr-1"></i> 2个知识点</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="floating-card p-4 hover:shadow-medium transition-shadow">
+                                <div class="flex items-center mb-2">
+                                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded mr-2">化学</span>
+                                    <span class="text-xs text-gray-500 ml-auto">2023-06-05</span>
+                                </div>
+                                <h3 class="font-medium text-gray-800 mb-1">常见气体的实验室制法</h3>
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-2">氧气的实验室制法：加热高锰酸钾、分解过氧化氢溶液、加热氯酸钾和二氧化锰的混合物...</p>
+                                <div class="flex items-center text-xs text-gray-500 justify-between">
+                                    <span><i class="fas fa-file-alt mr-1"></i> 4个知识点</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 空状态提示 (当没有笔记时显示) -->
+                        <!-- <div class="floating-card p-6 text-center shadow-soft">
+                            <i class="fas fa-sticky-note text-gray-300 text-4xl mb-3"></i>
+                            <p class="text-sm text-gray-500">您还没有学习笔记</p>
+                            <p class="text-xs text-gray-400 mt-1">解题后可以将知识点添加到笔记中</p>
+                            <button class="mt-4 bg-primary text-white text-sm font-medium py-2 px-6 rounded-full shadow-medium hover:bg-primary/90 transition-colors">
+                                立即添加
+                            </button>
+                        </div> -->
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+
+                    <!-- 底部导航栏 -->
+                    <div class="tab-bar">
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-home"></i></div>
+                            <div class="tab-label">首页</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-camera"></i></div>
+                            <div class="tab-label">解题</div>
+                        </div>
+                        <div class="tab-item active">
+                            <div class="tab-icon"><i class="fas fa-sticky-note"></i></div>
+                            <div class="tab-label">笔记</div>
+                        </div>
+                        <div class="tab-item">
+                            <div class="tab-icon"><i class="fas fa-user"></i></div>
+                            <div class="tab-label">我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面容器 - 第三行 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            <!-- 笔记详情页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -ml-10 -mb-10"></div>
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full -mr-10 -mt-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 顶部栏 -->
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="text-gray-600 mr-4 hover:text-gray-800 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-bold text-gray-800 text-xl">笔记详情</h2>
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 笔记内容 -->
+                        <div class="floating-card p-4 mb-6 shadow-soft">
+                            <div class="flex items-center mb-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2">数学</span>
+                                <span class="text-xs text-gray-500 ml-auto">2023-06-15</span>
+                            </div>
+                            <h3 class="font-bold text-gray-800 text-lg mb-3">二次函数知识点总结</h3>
+                            <div class="space-y-4 text-sm text-gray-800">
+                                <div>
+                                    <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs mr-2">1</span>
+                                        二次函数的定义
+                                    </h4>
+                                    <p class="ml-8">二次函数的一般形式为 y = ax² + bx + c，其中 a, b, c 为常数，且 a ≠ 0。二次函数的图像是一条抛物线。</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs mr-2">2</span>
+                                        二次函数的顶点式
+                                    </h4>
+                                    <p class="ml-8">二次函数的顶点式为 y = a(x - h)² + k，其中 (h, k) 是抛物线的顶点坐标。通过配方法可以将一般式转化为顶点式。</p>
+                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 font-mono text-xs mt-2 ml-8">
+                                        y = ax² + bx + c<br>
+                                        = a(x² + (b/a)x) + c<br>
+                                        = a(x² + (b/a)x + (b/(2a))² - (b/(2a))²) + c<br>
+                                        = a(x + b/(2a))² + c - b²/(4a)<br>
+                                        其中 h = -b/(2a), k = c - b²/(4a)
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs mr-2">3</span>
+                                        二次函数的性质
+                                    </h4>
+                                    <ul class="list-disc ml-14 space-y-1">
+                                        <li>当 a > 0 时，抛物线开口向上；当 a < 0 时，抛物线开口向下。</li>
+                                        <li>对称轴为直线 x = -b/(2a)。</li>
+                                        <li>顶点坐标为 (-b/(2a), (4ac - b²)/(4a))。</li>
+                                        <li>当 a > 0 时，函数在 x = -b/(2a) 处取得最小值；当 a < 0 时，函数在 x = -b/(2a) 处取得最大值。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 相关题目 -->
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-thumbs-up text-primary mr-2"></i>相关题目
+                        </h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="floating-card p-3 hover:bg-gray-50 transition-colors shadow-soft">
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-1">已知二次函数 y = ax² + bx + c 的图像过点 (1, 2), (2, 3), (3, 6)，求 a, b, c 的值。</p>
+                                <span class="text-xs text-gray-500">数学 · 二次函数</span>
+                            </div>
+                            <div class="floating-card p-3 hover:bg-gray-50 transition-colors shadow-soft">
+                                <p class="text-sm text-gray-800 line-clamp-2 mb-1">求二次函数 y = x² - 4x + 3 的顶点坐标和对称轴。</p>
+                                <span class="text-xs text-gray-500">数学 · 二次函数</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部安全区域 -->
+                    <div class="safe-area-bottom"></div>
+                </div>
+            </div>
+
+            <!-- 个人中心页 -->
+            <div class="iphone-frame mx-auto">
+                <div class="app-container bg-white relative">
+                    <!-- 背景元素 -->
+                    <div class="background-element top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-10 -mt-10"></div>
+                    <div class="background-element bottom-0 left-0 w-64 h-64 bg-warning/5 rounded-full -ml-10 -mb-10"></div>
+
+                    <!-- 顶部安全区域 -->
+                    <div class="safe-area-top"></div>
+
+                    <!-- 页面内容 -->
+                    <div class="p-4">
+                        <!-- 用户信息 -->
+                        <div class="floating-card p-6 text-center mb-6 shadow-soft relative overflow-hidden">
+                            <div class="background-element top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-8 -mt-8"></div>
+                            <div class="relative z-10">
+                                <img src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="用户头像" class="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-soft">
+                                <h3 class="font-bold text-gray-800 text-xl mb-1">用户昵称</h3>
+                                <p class="text-sm text-gray-500 mb-3">学习进度: 初中三年级</p>
+                                <div class="flex justify-center space-x-3 mb-4">
+                                    <div class="text-center">
+                                        <p class="font-bold text-gray-800">56</p>
+                                        <p class="text-xs text-gray-500">已解题</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="font-bold text-gray-800">12</p>
+                                        <p class="text-xs text-gray-500">笔记</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="font-bold text-gray-800">85%</p>
+                                        <p class="text-xs text-gray-500">正确率</p>
+                                    </div>
+                                </div>
+                                <button class="bg-primary text-white text-sm font-medium py-2 px-6 rounded-full shadow-medium hover:bg-primary/90 transition-colors">
+                                    编辑资料
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 功能菜单 -->
+                        <div class="space-y-2 mb-6">
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">学习计划</h4>
+                                    <p class="text-xs text-gray-500">定制你的学习目标</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-3">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">学习统计</h4>
+                                    <p class="text-xs text-gray-500">查看你的学习数据</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent mr-3">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">收藏题目</h4>
+                                    <p class="text-xs text-gray-500">查看收藏的题目</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning mr-3">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">设置</h4>
+                                    <p class="text-xs text-gray-500">应用设置和偏好</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- 关于我们 -->
+                        <div class="space-y-2">
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 mr-3">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h4 class="font-medium text-gray-800">关于我们</h4>
+                                    <p class="text-xs text-gray-500">了解AI学习助手</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="floating-card p-4 flex items-center hover:bg-gray-50 transition-colors shadow-soft">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 mr-3">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div class="flex-g
