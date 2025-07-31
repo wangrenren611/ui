@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智答 - AI辅助答题小程序</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981',     // 主色调-成长绿
+                        secondary: '#6366F1',   // 辅助色-智慧紫
+                        accent: '#F59E0B',      // 强调色
+                        gradientStart: '#22C55E',
+                        gradientEnd: '#3B82F6',
+                        neutral: {
+                            100: '#F0FDF4',
+                            200: '#DCFCE7',
+                            300: '#BBF7D0',
+                            400: '#4ADE80',
+                            500: '#10B981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065F46',
+                            900: '#064E3B',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                    },
+                    height: {
+                        'screen-iphone': '812px',
+                    },
+                    width: {
+                        'iphone': '407px',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 400;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 500;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 600;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 700;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZg.ttf) format('truetype');
+            }
+            
+            body {
+                font-family: 'Inter', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+        
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .iphone-frame {
+                width: 407px;
+                height: 812px;
+                border: 16px solid #111;
+                border-radius: 40px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 30px rgba(0,0,0,0.25);
+                transition: all 0.3s ease;
+                background-color: #000;
+            }
+            .iphone-frame:hover {
+                box-shadow: 0 0 40px rgba(79, 70, 229, 0.3);
+                transform: translateY(-5px);
+            }
+            .iphone-notch {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 160px;
+                height: 30px;
+                background-color: #111;
+                border-bottom-left-radius: 18px;
+                border-bottom-right-radius: 18px;
+                z-index: 10;
+            }
+            .iphone-screen {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #f8fafc;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-top: 44px;
+                padding-bottom: 34px;
+                background-image: linear-gradient(to bottom, rgba(249, 250, 251, 0.8), rgba(249, 250, 251, 0.4));
+            }
+            .safe-area-top {
+                padding-top: env(safe-area-inset-top);
+            }
+            .safe-area-bottom {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            .tab-bar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 60px;
+                background-color: white;
+                border-top: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 50;
+                box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+            }
+            .tab-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                transition: all 0.2s ease;
+            }
+            .tab-item.active {
+                color: #10B981;
+            }
+            .tab-item span {
+                font-size: 10px;
+                margin-top: 4px;
+                transition: all 0.2s ease;
+            }
+            .fab-button {
+                position: absolute;
+                right: 24px;
+                bottom: 80px;
+                width: 56px;
+                height: 56px;
+                border-radius: 9999px;
+                background: linear-gradient(135deg, #10B981, #6366F1);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+                z-index: 100;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .fab-button:hover {
+                transform: scale(1.05) rotate(10deg);
+                box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.3);
+            }
+            .fab-button:active {
+                transform: scale(0.98);
+            }
+            .skeleton {
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+            .question-card {
+                transition: all 0.3s ease;
+            }
+            .question-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            }
+            .ai-response {
+                position: relative;
+            }
+            .ai-response::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background-color: #10B981;
+                border-radius: 2px;
+            }
+            .analysis-chart {
+                height: 180px;
+            }
+            .progress-fill {
+                transition: width 1s ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-neutral-100 to-neutral-200 p-4 md:p-8 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">智答 - AI辅助答题小程序</h1>
+            <p class="text-neutral-600 mt-2 max-w-2xl mx-auto">智能学习伴侣｜AI辅助解题｜知识点分析｜错题智能整理</p>
+        </div>
+        
+        <!-- 页面容器 -->
+        <div class="flex flex-wrap gap-8 justify-center">
+            <!-- 页面1: 首页 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- 顶部用户信息 -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="bg-gray-200 border-2 border-dashed rounded-full w-12 h-12"></div>
+                                <div class="ml-3">
+                                    <p class="font-medium">欢迎回来, 李同学</p>
+                                    <p class="text-sm text-gray-500">今日学习时长: 1h23m</p>
+                                </div>
+                            </div>
+                            <div class="bg-neutral-200 rounded-full p-2">
+                                <i class="fas fa-bell text-gray-600"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- 搜索框 -->
+                        <div class="relative mb-6 z-50">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" placeholder="搜索题目、知识点或课程" 
+                                   class="w-full bg-white rounded-2xl py-3 pl-10 pr-4 border-0 shadow-md focus:ring-2 focus:ring-primary focus:outline-none">
+                        </div>
+                        
+                        <!-- 学习进度 -->
+                        <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl p-5 text-white shadow-lg mb-6 z-50">
+                            <h3 class="font-medium text-lg mb-2">你的化学学习进度</h3>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span>已完成: 72%</span>
+                                <span>知识点: 8/12</span>
+                            </div>
+                            <div class="w-full bg-white bg-opacity-30 rounded-full h-2.5">
+                                <div class="bg-white h-2.5 rounded-full progress-fill" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 推荐专区 -->
+                        <div class="mb-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold text-lg">推荐专区</h3>
+                                <a href="#" class="text-primary text-sm flex items-center">
+                                    更多 <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white rounded-2xl p-4 shadow-md">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                            <i class="fas fa-atom text-blue-500"></i>
+                                        </div>
+                                        <span class="font-medium ml-2">化学平衡</span>
+                                    </div>
+                                    <p class="text-gray-500 text-sm mb-3">15道题待练习</p>
+                                    <div class="bg-gray-100 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 40%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white rounded-2xl p-4 shadow-md">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                            <i class="fas fa-bolt text-green-500"></i>
+                                        </div>
+                                        <span class="font-medium ml-2">电化学</span>
+                                    </div>
+                                    <p class="text-gray-500 text-sm mb-3">9道题待练习</p>
+                                    <div class="bg-gray-100 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 每日挑战 -->
+                        <div class="bg-white rounded-2xl p-5 shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="font-semibold">今日挑战</h3>
+                                    <p class="text-gray-500 text-sm">完成后可解锁成就</p>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">2题</span>
+                            </div>
+                            
+                            <div class="question-card bg-neutral-50 rounded-xl p-4 shadow-sm mb-3">
+                                <p class="font-medium flex items-center">
+                                    <span class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                                    计算0.1mol/L的HCl溶液的pH值
+                                </p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-clock mr-1"></i> 2分钟前
+                                    </span>
+                                    <button class="bg-primary text-white text-sm py-1 px-3 rounded-lg">开始挑战</button>
+                                </div>
+                            </div>
+                            
+                            <div class="question-card bg-neutral-50 rounded-xl p-4 shadow-sm">
+                                <p class="font-medium flex items-center">
+                                    <span class="bg-secondary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                                    下列反应属于取代反应的是...
+                                </p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-clock mr-1"></i> 5分钟前
+                                    </span>
+                                    <button class="bg-secondary text-white text-sm py-1 px-3 rounded-lg">开始挑战</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item active">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+                
+                <!-- FAB按钮 -->
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+            
+            <!-- 页面2: 答题页面 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- 顶部导航 -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center">
+                                <i class="fas fa-chevron-left text-gray-500"></i>
+                            </button>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-500">化学 | 电化学</p>
+                                <h3 class="font-semibold">题目 #2</h3>
+                            </div>
+                            <button class="text-gray-500">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- 题目内容 -->
+                        <div class="bg-white rounded-2xl p-5 shadow-md mb-6 z-50">
+                            <div class="mb-4">
+                                <span class="bg-primary text-white text-xs font-medium px-2 py-1 rounded mr-2">中等</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">电化学</span>
+                            </div>
+                            
+                            <h3 class="font-medium text-lg mb-4">
+                                用惰性电极电解饱和NaCl溶液一段时间后，下列叙述正确的是：
+                            </h3>
+                            
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-primary-50 cursor-pointer group">
+                                    <div class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center group-hover:border-primary mr-3">
+                                        A
+                                    </div>
+                                    <p>电解池阴极产生气体使湿润的淀粉-KI试纸变蓝</p>
+                                </div>
+                                <div class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-primary-50 cursor-pointer group">
+                                    <div class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center group-hover:border-primary mr-3">
+                                        B
+                                    </div>
+                                    <p>溶液浓度减小，pH减小</p>
+                                </div>
+                                <div class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-primary-50 cursor-pointer group">
+                                    <div class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center group-hover:border-primary mr-3">
+                                        C
+                                    </div>
+                                    <p>电解池阳极产生气体可使带火星木条复燃</p>
+                                </div>
+                                <div class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-primary-50 cursor-pointer group">
+                                    <div class="w-6 h-6 rounded-full border border-gray-300 flex items center justify-center group-hover:border-primary mr-3">
+                                        D
+                                    </div>
+                                    <p>电解后恢复原状态需加入适量盐酸</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <button class="text-primary flex items-center">
+                                    <i class="fas fa-heart mr-2"></i> 收藏
+                                </button>
+                                <button class="text-primary flex items-center">
+                                    <i class="fas fa-comment mr-2"></i> 评论
+                                </button>
+                                <button class="text-primary flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-2"></i> 举报
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- AI解答提示 -->
+                        <div class="bg-gradient-to-r from-neutral-300 to-neutral-200 border border-neutral-400 rounded-2xl p-4 mb-6 z-0 blur-sm opacity-80">
+                            <div class="flex justify-between items-center mb-2">
+                                <p class="text-sm font-medium flex items-center">
+                                    <i class="fas fa-robot mr-2 text-secondary"></i> AI解答提示
+                                </p>
+                                <span class="bg-white text-neutral-700 text-xs font-medium px-2 py-0.5 rounded-full">点击展开</span>
+                            </div>
+                            <p class="text-sm opacity-70">本题考察电解饱和食盐水的原理和相关现象...</p>
+                        </div>
+                        
+                        <!-- 操作按钮 -->
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <button class="py-3 px-4 bg-white rounded-xl shadow-md font-medium flex items-center justify-center">
+                                <i class="fas fa-question-circle mr-2"></i> 查看解析
+                            </button>
+                            <button class="py-3 px-4 bg-primary text-white rounded-xl shadow-md font-medium flex items-center justify-center">
+                                <i class="fas fa-robot mr-2"></i> AI辅助
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+                
+                <!-- FAB按钮 -->
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+            
+            <!-- 页面3: AI辅助页面 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- AI助手头部 -->
+                        <div class="flex flex-col items-center mb-6">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-3">
+                                <i class="fas fa-robot text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-semibold text-lg">AI答题助手</h3>
+                            <p class="text-gray-500 text-sm">当前题目：电解饱和NaCl溶液</p>
+                        </div>
+                        
+                        <!-- 对话区域 -->
+                        <div class="space-y-4 mb-20">
+                            <!-- 用户消息 -->
+                            <div class="flex justify-end mb-3">
+                                <div class="bg-primary text-white rounded-xl p-4 max-w-[80%] shadow-sm">
+                                    <p>我不理解为什么选项B是错误的？溶液浓度为什么不会减小？</p>
+                                </div>
+                            </div>
+                            
+                            <!-- AI回复 -->
+                            <div class="flex">
+                                <div class="mr-2">
+                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-robot text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="ai-response bg-white rounded-xl p-4 max-w-[80%] shadow-sm">
+                                    <p class="font-medium text-sm mb-2">这个问题很好！我们可以从电解原理的角度来分析：</p>
+                                    <ol class="text-sm space-y-2 list-decimal list-inside">
+                                        <li>电解饱和食盐水时，阴极反应是2H₂O + 2e⁻ → H₂↑ + 2OH⁻</li>
+                                        <li>阳极反应是2Cl⁻ → Cl₂↑ + 2e⁻</li>
+                                        <li>总反应为：2NaCl + 2H₂O → 2NaOH + H₂↑ + Cl₂↑</li>
+                                    </ol>
+                                    <p class="text-sm mt-2">由于Na+和Cl⁻都没有参与反应，但水被消耗了，所以实际浓度<span class="font-semibold text-primary">会增加</span>而不是减小。</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 用户消息 -->
+                            <div class="flex justify-end">
+                                <div class="bg-primary text-white rounded-xl p-4 max-w-[80%] shadow-sm">
+                                    <p>明白了！那为什么pH会增大呢？</p>
+                                </div>
+                            </div>
+                            
+                            <!-- AI回复 -->
+                            <div class="flex">
+                                <div class="mr-2">
+                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-robot text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="ai-response bg-white rounded-xl p-4 max-w-[80%] shadow-sm">
+                                    <p class="font-medium text-sm mb-2">这个问题涉及到电解产物：</p>
+                                    <p class="text-sm mb-2">从阴极反应可以看出，生成了OH⁻离子：</p>
+                                    <p class="bg-neutral-50 p-2 rounded-md text-sm mb-2">2H₂O + 2e⁻ → H₂↑ + 2OH⁻</p>
+                                    <p class="text-sm">所以溶液中OH⁻浓度增加，导致溶液的碱性增强，因此pH值<span class="font-semibold text-primary">会增大</span>。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 输入区域 -->
+                        <div class="bottom-[84px] left-0 right-0 p-4 bg-white z-100">
+                            <div class="relative">
+                                <textarea 
+                                    rows="1"
+                                    placeholder="向AI助手提问..." 
+                                    class="w-full bg-gray-100 rounded-full py-3 pl-4 pr-14 focus:ring-2 focus:ring-primary focus:outline-none resize-none"
+                                ></textarea>
+                                <button class="absolute right-3 bottom-2 bg-primary w-10 h-10 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-paper-plane text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第二行页面容器 -->
+        <div class="flex flex-wrap gap-8 justify-center mt-8">
+            <!-- 页面4: 学习报告 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- 顶部标题 -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-xl font-bold">学习报告</h2>
+                                <p class="text-sm text-gray-500">更新于今天 14:30</p>
+                            </div>
+                            <button class="text-gray-500">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- 数据概览 -->
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                                <p class="text-2xl font-bold text-primary">87%</p>
+                                <p class="text-xs text-gray-500">正确率</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                                <p class="text-2xl font-bold text-secondary">42</p>
+                                <p class="text-xs text-gray-500">已学知识点</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                                <p class="text-2xl font-bold text-accent">28h</p>
+                                <p class="text-xs text-gray-500">学习时长</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 正确率图表 -->
+                        <div class="bg-white rounded-2xl p-5 shadow-md mb-6 z-50">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">学科正确率变化</h3>
+                                <div class="flex space-x-2">
+                                    <span class="bg-primary-100 text-primary text-xs font-medium px-2 py-0.5 rounded-full">化学</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">物理</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full">生物</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 图表占位 -->
+                            <div class="analysis-chart relative">
+                                <div class="absolute bottom-0 left-0 right-0 flex items-end h-full">
+                                    <div class="flex-1 mx-1 bg-primary rounded-t-md" style="height: 75%"></div>
+                                    <div class="flex-1 mx-1 bg-primary rounded-t-md" style="height: 82%"></div>
+                                    <div class="flex-1 mx-1 bg-secondary rounded-t-md" style="height: 65%"></div>
+                                    <div class="flex-1 mx-1 bg-primary rounded-t-md" style="height: 79%"></div>
+                                    <div class="flex-1 mx-1 bg-accent rounded-t-md" style="height: 88%"></div>
+                                    <div class="flex-1 mx-1 bg-secondary rounded-t-md" style="height: 70%"></div>
+                                    <div class="flex-1 mx-1 bg-primary rounded-t-md" style="height: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 知识点掌握情况 -->
+                        <div class="bg-white rounded-2xl p-5 shadow-md">
+                            <h3 class="font-semibold mb-4">知识点掌握情况</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm">氧化还原反应</span>
+                                        <span class="text-sm">92%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm">化学反应速率</span>
+                                        <span class="text-sm">78%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm">电化学基础</span>
+                                        <span class="text-sm">65%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm">有机化学</span>
+                                        <span class="text-sm">83%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 83%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+                
+                <!-- FAB按钮 -->
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+            
+            <!-- 页面5: 错题本 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- 错题本头部 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-bold">错题本</h2>
+                                <div class="flex space-x-2">
+                                    <button class="bg-neutral-100 rounded-lg px-3 py-1 text-sm">
+                                        <i class="fas fa-filter mr-1"></i> 筛选
+                                    </button>
+                                    <button class="bg-primary text-white rounded-lg px-3 py-1 text-sm">
+                                        智能整理
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">当前收集错题: 24道</p>
+                        </div>
+                        
+                        <!-- 错题列表 -->
+                        <div class="space-y-4">
+                            <div class="question-card bg-white rounded-xl p-4 shadow-md">
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded mr-2">电化学</div>
+                                    <div class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded">错2次</div>
+                                    <span class="ml-auto text-sm text-gray-500">昨天</span>
+                                </div>
+                                
+                                <p class="font-medium mb-3">用惰性电极电解饱和NaCl溶液，下列叙述正确的是...</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="flex">
+                                        <span class="text-xs px-2 py-0.5 bg-red-50 text-red-600 rounded mr-2">未掌握</span>
+                                        <span class="text-xs px-2 py-0.5 bg-green-50 text-green-600 rounded">易错题</span>
+                                    </div>
+                                    <button class="text-primary text-sm">AI强化训练</button>
+                                </div>
+                            </div>
+                            
+                            <div class="question-card bg-white rounded-xl p-4 shadow-md">
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded mr-2">有机化学</div>
+                                    <div class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded">错1次</div>
+                                    <span class="ml-auto text-sm text-gray-500">2天前</span>
+                                </div>
+                                
+                                <p class="font-medium mb-3">下列有关蛋白质性质和应用的说法错误的是...</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="flex">
+                                        <span class="text-xs px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded mr-2">待巩固</span>
+                                        <span class="text-xs px-2 py-0.5 bg-green-50 text-green-600 rounded">重点题</span>
+                                    </div>
+                                    <button class="text-primary text-sm">AI强化训练</button>
+                                </div>
+                            </div>
+                            
+                            <div class="question-card bg-white rounded-xl p-4 shadow-md">
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded mr-2">反应平衡</div>
+                                    <div class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded">错3次</div>
+                                    <span class="ml-auto text-sm text-gray-500">3天前</span>
+                                </div>
+                                
+                                <p class="font-medium mb-3">在一定温度下的恒容密闭容器中发生反应...</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="flex">
+                                        <span class="text-xs px-2 py-0.5 bg-red-50 text-red-600 rounded mr-2">未掌握</span>
+                                        <span class="text-xs px-2 py-0.5 bg-green-50 text-green-600 rounded">高频题</span>
+                                    </div>
+                                    <button class="text-primary text-sm">AI强化训练</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 智能整理提示 -->
+                        <div class="bottom-24 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-primary to-secondary rounded-full px-4 py-2 text-white shadow-lg z-100">
+                            <div class="flex items-center">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                <span>AI发现2个共同薄弱点需要强化</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+                
+                <!-- FAB按钮 -->
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+            
+            <!-- 页面6: 个人中心 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-5">
+                        <!-- 用户信息头部 -->
+                        <div class="flex flex-col items-center mb-8">
+                            <div class="relative">
+                                <div class="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden">
+                                    <div class="bg-gray-200 border-2 border-dashed rounded-full w-full h-full"></div>
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 bg-secondary w-8 h-8 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-pen text-white text-xs"></i>
+                                </div>
+                            </div>
+                            <h2 class="text-xl font-bold mt-4">李同学</h2>
+                            <p class="text-gray-500">高三理科 | 累计学习128小时</p>
+                            <div class="mt-2 flex items-center bg-yellow-50 px-3 py-1 rounded-full text-yellow-800">
+                                <i class="fas fa-crown mr-1"></i>
+                                <span class="text-sm">黄金会员</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 学习数据卡片 -->
+                        <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl p-5 text-white shadow-lg mb-6 z-50">
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p class="text-2xl font-bold">28</p>
+                                    <p class="text-xs opacity-90">连续学习</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold">42</p>
+                                    <p class="text-xs opacity-90">学知识点</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold">186</p>
+                                    <p class="text-xs opacity-90">完成题目</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能列表 -->
+                        <div class="bg-white rounded-2xl shadow-md divide-y divide-gray-100 mb-6 z-50">
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-gem text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium">会员中心</p>
+                                    <p class="text-xs text-gray-500">解锁更多AI功能</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                            
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-star text-blue-500"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium">我的成就</p>
+                                    <p class="text-xs text-gray-500">已完成12项成就</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                            
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-bookmark text-green-500"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium">我的收藏</p>
+                                    <p class="text-xs text-gray-500">已收藏32个题目</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                        </div>
+                        
+                        <!-- 系统设置 -->
+                        <div class="bg-white rounded-2xl shadow-md divide-y divide-gray-100 z-50">
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-cog text-purple-500"></i>
+                                </div>
+                                <p class="font-medium flex-1">系统设置</p>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                            
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-question-circle text-yellow-500"></i>
+                                </div>
+                                <p class="font-medium flex-1">帮助中心</p>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                            
+                            <a href="#" class="flex items-center py-4 px-5">
+                                <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-sign-out-alt text-red-500"></i>
+                                </div>
+                                <p class="font-medium flex-1">退出登录</p>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home text-base"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span>题库</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar text-base"></i>
+                        <span>报告</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-user text-base"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+                
+                <!-- FAB按钮 -->
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 应用说明 -->
+        <div class="mt-16 p-8 bg-white rounded-2xl shadow-lg max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8">智答小程序设计说明</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">核心功能设计</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="bg-primary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-robot text-primary text-xs"></i>
+                            </div>
+                            <span><strong>AI实时辅助答题</strong> - 对话式解题引导和知识点解析</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-book text-primary text-xs"></i>
+                            </div>
+                            <span><strong>智能错题本</strong> - 自动分类整理，识别薄弱知识点</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-chart-line text-primary text-xs"></i>
+                            </div>
+                            <span><strong>学习数据分析</strong> - 正确率趋势、知识点掌握度可视化</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-trophy text-primary text-xs"></i>
+                            </div>
+                            <span><strong>成就激励系统</strong> - 学习目标和成就系统提升学习动力</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">设计规范实现</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="bg-secondary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-layer-group text-secondary text-xs"></i>
+                            </div>
+                            <span><strong>三层视觉层级</strong> - 严格遵循前景/中景/背景规范</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-secondary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-mobile-alt text-secondary text-xs"></i>
+                            </div>
+                            <span><strong>响应式适配</strong> - 支持320px/375px/428px宽度</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-secondary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-palette text-secondary text-xs"></i>
+                            </div>
+                            <span><strong>色彩系统</strong> - 主色#10B981，辅色#6366F1</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-secondary-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">
+                                <i class="fas fa-eye text-secondary text-xs"></i>
+                            </div>
+                            <span><strong>无障碍设计</strong> - 所有对比度≥4.5:1</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-neutral-50 rounded-xl">
+                <h3 class="font-medium mb-2">设计要点</h3>
+                <p class="text-sm text-gray-600">
+                    本设计融合了AI辅导系统的专业性与微信小程序的操作便捷性，采用渐进式的交互设计引导用户完成学习流程。
+                    核心聚焦于"答题→辅导→分析→强化"的学习闭环，通过AI技术将错题转化为个人定制的学习资料，减少重复劳动。
+                    FAB按钮提供快速添加题目入口，强化操作效率。学习报告可视化降低认知负荷，帮助用户清晰理解知识掌握情况。
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载完成后执行进度动画 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progress = document.querySelector('.progress-fill');
+            if (progress) {
+                progress.style.width = '72%';
+            }
+        });
+    </script>
+</body>
+</html>

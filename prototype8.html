@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线做题与AI辅助答题 - 微信小程序原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5', // 主色调：靛蓝色
+                        secondary: '#10B981', // 辅助色：绿色
+                        accent: '#F59E0B', // 强调色：橙色
+                        neutral: {
+                            100: '#F3F4F6',
+                            200: '#E5E7EB',
+                            300: '#D1D5DB',
+                            400: '#9CA3AF',
+                            500: '#6B7280',
+                            600: '#4B5563',
+                            700: '#374151',
+                            800: '#1F2937',
+                            900: '#111827',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    },
+                    height: {
+                        'screen-iphone': '812px',
+                    },
+                    width: {
+                        'iphone': '407px',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .iphone-frame {
+                width: 407px;
+                height: 812px;
+                border: 16px solid #111;
+                border-radius: 40px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            }
+            .iphone-notch {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 160px;
+                height: 30px;
+                background-color: #111;
+                border-bottom-left-radius: 18px;
+                border-bottom-right-radius: 18px;
+                z-index: 10;
+            }
+            .iphone-screen {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-top: 44px;
+                padding-bottom: 34px;
+            }
+            .safe-area-top {
+                padding-top: env(safe-area-inset-top);
+            }
+            .safe-area-bottom {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            .tab-bar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 50px;
+                background-color: white;
+                border-top: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 50;
+            }
+            .fab-button {
+                position: absolute;
+                bottom: 70px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: #4F46E5;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+                z-index: 60;
+            }
+            .skeleton {
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+            }
+            @keyframes skeleton-loading {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-2xl font-bold mb-8 text-center">在线做题与AI辅助答题 - 微信小程序原型</h1>
+        <div class="flex flex-wrap gap-6 justify-center">
+            <!-- 首页 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold">学习中心</h2>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-bell text-gray-600"></i>
+                                <i class="fas fa-user-circle text-gray-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="relative mb-6">
+                            <input type="text" placeholder="搜索题目或知识点..." class="w-full py-3 px-4 pl-10 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/50">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+
+                        <!-- 分类卡片 -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-primary/10 rounded-xl p-4 flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mb-2">
+                                    <i class="fas fa-book text-primary text-xl"></i>
+                                </div>
+                                <span class="text-sm font-medium">题库练习</span>
+                            </div>
+                            <div class="bg-secondary/10 rounded-xl p-4 flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-2">
+                                    <i class="fas fa-lightbulb text-secondary text-xl"></i>
+                                </div>
+                                <span class="text-sm font-medium">AI辅导</span>
+                            </div>
+                            <div class="bg-accent/10 rounded-xl p-4 flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mb-2">
+                                    <i class="fas fa-chart-line text-accent text-xl"></i>
+                                </div>
+                                <span class="text-sm font-medium">学习报告</span>
+                            </div>
+                            <div class="bg-purple-100 rounded-xl p-4 flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mb-2">
+                                    <i class="fas fa-trophy text-purple-600 text-xl"></i>
+                                </div>
+                                <span class="text-sm font-medium">排行榜</span>
+                            </div>
+                        </div>
+
+                        <!-- 推荐题目 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold">推荐题目</h3>
+                                <span class="text-primary text-sm">查看全部</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">数学</span>
+                                        <span class="text-xs text-gray-500">难度：中等</span>
+                                    </div>
+                                    <p class="text-sm mb-3">已知二次函数f(x) = ax² + bx + c的图像经过点(1, 2)、(2, 3)和(3, 6)，求该函数的解析式。</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500">10分钟内完成</span>
+                                        <button class="text-primary text-sm font-medium">开始答题</button>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">物理</span>
+                                        <span class="text-xs text-gray-500">难度：较难</span>
+                                    </div>
+                                    <p class="text-sm mb-3">一个质量为m的物体在光滑水平面上受到一个水平力F的作用，从静止开始运动。已知力F随时间变化的关系为F = kt（k为常数），求t时刻物体的速度和位移。</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500">15分钟内完成</span>
+                                        <button class="text-primary text-sm font-medium">开始答题</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 最近学习 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold">最近学习</h3>
+                                <span class="text-primary text-sm">清空记录</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                        <i class="fas fa-history text-gray-500"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium">高等数学题库</p>
+                                        <p class="text-xs text-gray-500">昨天 19:30</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                        <i class="fas fa-history text-gray-500"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium">线性代数 - 矩阵运算</p>
+                                        <p class="text-xs text-gray-500">昨天 14:15</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="flex flex-col items-center text-primary">
+                        <i class="fas fa-home text-sm"></i>
+                        <span class="text-xs mt-1">首页</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-search text-sm"></i>
+                        <span class="text-xs mt-1">搜索</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-book-open text-sm"></i>
+                        <span class="text-xs mt-1">学习</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-user text-sm"></i>
+                        <span class="text-xs mt-1">我的</span>
+                    </div>
+                </div>
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+
+            <!-- 答题页面 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm bg-gray-100 px-2 py-1 rounded-full">1/5</span>
+                                <i class="fas fa-ellipsis-v text-gray-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- 题目内容 -->
+                        <div class="mb-8">
+                            <div class="flex items-start mb-4">
+                                <span class="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded mr-2 mt-0.5">数学</span>
+                                <h2 class="text-lg font-bold">已知二次函数f(x) = ax² + bx + c的图像经过点(1, 2)、(2, 3)和(3, 6)，求该函数的解析式。</h2>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg text-sm text-gray-600 mb-4">
+                                <p class="mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>提示：通过解方程组来确定系数a、b、c的值。</p>
+                                <p><i class="fas fa-clock text-gray-400 mr-2"></i>建议用时：10分钟</p>
+                            </div>
+                        </div>
+
+                        <!-- 答题区域 -->
+                        <div class="mb-6">
+                            <h3 class="text-sm font-medium mb-3">你的解答：</h3>
+                            <textarea class="w-full h-40 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none" placeholder="请输入你的解答过程..."></textarea>
+                        </div>
+
+                        <!-- AI辅助按钮 -->
+                        <div class="grid grid-cols-2 gap-3 mb-8">
+                            <button class="flex items-center justify-center gap-2 py-3 bg-primary/10 text-primary rounded-lg text-sm font-medium">
+                                <i class="fas fa-magic"></i>
+                                <span>AI提示</span>
+                            </button>
+                            <button class="flex items-center justify-center gap-2 py-3 bg-secondary/10 text-secondary rounded-lg text-sm font-medium">
+                                <i class="fas fa-check-circle"></i>
+                                <span>检查答案</span>
+                            </button>
+                        </div>
+
+                        <!-- 底部导航 -->
+                        <div class="flex justify-between">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600">
+                                上一题
+                            </button>
+                            <button class="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium">
+                                下一题
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-home text-sm"></i>
+                        <span class="text-xs mt-1">首页</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-search text-sm"></i>
+                        <span class="text-xs mt-1">搜索</span>
+                    </div>
+                    <div class="flex flex-col items-center text-primary">
+                        <i class="fas fa-book-open text-sm"></i>
+                        <span class="text-xs mt-1">学习</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-user text-sm"></i>
+                        <span class="text-xs mt-1">我的</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI辅导页面 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="text-xl font-bold">AI辅导</h2>
+                            <i class="fas fa-cog text-gray-600"></i>
+                        </div>
+
+                        <!-- AI助手介绍 -->
+                        <div class="bg-gradient-to-r from-primary/20 to-purple-100 rounded-2xl p-5 mb-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm mr-4 flex-shrink-0">
+                                    <i class="fas fa-robot text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-1">智能学习助手</h3>
+                                    <p class="text-sm text-gray-700">随时为你解答学习疑问，提供个性化辅导</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 功能卡片 -->
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+                                    <i class="fas fa-question-circle text-blue-600"></i>
+                                </div>
+                                <h4 class="font-medium text-sm mb-1">题目解析</h4>
+                                <p class="text-xs text-gray-500">详细解析解题思路</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-3">
+                                    <i class="fas fa-lightbulb text-green-600"></i>
+                                </div>
+                                <h4 class="font-medium text-sm mb-1">思路引导</h4>
+                                <p class="text-xs text-gray-500">引导你独立思考解题</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mb-3">
+                                    <i class="fas fa-book text-yellow-600"></i>
+                                </div>
+                                <h4 class="font-medium text-sm mb-">知识点讲解</h4>
+                                <p class="text-xs text-gray-500">系统讲解相关知识点</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mb-3">
+                                    <i class="fas fa-chart-pie text-purple-600"></i>
+                                </div>
+                                <h4 class="font-medium text-sm mb-1">学习建议</h4>
+                                <p class="text-xs text-gray-500">个性化学习计划推荐</p>
+                            </div>
+                        </div>
+
+                        <!-- 聊天界面 -->
+                        <div class="flex flex-col h-[calc(100%-320px)]">
+                            <div class="flex flex-col gap-4 mb-4 flex-1 overflow-y-auto">
+                                <!-- AI回复 -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fas fa-robot text-gray-500 text-xs"></i>
+                                    </div>
+                                    <div class="bg-gray-100 rounded-lg rounded-tl-none px-3 py-2 max-w-[70%]">
+                                        <p class="text-sm">你好！我是你的AI学习助手，有什么学习问题可以问我哦~</p>
+                                    </div>
+                                </div>
+
+                                <!-- 用户问题 -->
+                                <div class="flex items-start justify-end">
+                                    <div class="bg-primary text-white rounded-lg rounded-tr-none px-3 py-2 max-w-[70%]">
+                                        <p class="text-sm">如何求解二次函数的解析式？</p>
+                                    </div>
+                                </div>
+
+                                <!-- AI回复 -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fas fa-robot text-gray-500 text-xs"></i>
+                                    </div>
+                                    <div class="bg-gray-100 rounded-lg rounded-tl-none px-3 py-2 max-w-[70%]">
+                                        <p class="text-sm mb-2">求解二次函数的解析式通常有以下几种方法：</p>
+                                        <ol class="text-sm list-decimal list-inside space-y-1 mb-2">
+                                            <li>已知三点坐标：代入一般式求解</li>
+                                            <li>已知顶点和一点：使用顶点式求解</li>
+                                            <li>已知与x轴交点和一点：使用交点式求解</li>
+                                        </ol>
+                                        <p class="text-sm">需要我详细讲解哪种方法呢？</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 输入区域 -->
+                            <div class="relative">
+                                <textarea class="w-full py-3 px-4 pr-12 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none" placeholder="输入你的问题..."></textarea>
+                                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-paper-plane text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-home text-sm"></i>
+                        <span class="text-xs mt-1">首页</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-search text-sm"></i>
+                        <span class="text-xs mt-1">搜索</span>
+                    </div>
+                    <div class="flex flex-col items-center text-primary">
+                        <i class="fas fa-book-open text-sm"></i>
+                        <span class="text-xs mt-1">学习</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-500">
+                        <i class="fas fa-user text-sm"></i>
+                        <span class="text-xs mt-1">我的</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学习报告页面 -->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="text-gray-600">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="text-xl font-bold">学习报告</h2>
+                            <i class="fas fa-share-alt text-gray-600"></i>
+                        </div>
+
+                        <!-- 学习概览 -->
+                        <div class="bg-gradient-to-r from-primary to-purple-600 rounded-2xl p-5 text-white mb-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <p class="text-sm opacity-80">本周学习</p>
+                                    <h3 class="text-2xl font-bold mt-1">12.5 小时</h3>
+                                </div>
+                                <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs">
+                                    <i class="fas fa-arrow-up mr-1"></i>15%
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div>
+                                    <p class="text-2xl font-bold">42</p>
+                                    <p class="text-xs opacity-80">题目数量</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold">85%</p>
+                                    <p class="text-xs opacity-80">正确率</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold">12</p>
+                                    <p class="text-xs opacity-80">知识点</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 正确率趋势 -->
+                        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold">正确率趋势</h3>
+                                <select class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    <option>本周</option>
+                                    <option>本月</option>
+                                    <option>全部</option>
+                                </select>
+                            </div>
+                            <div class="h-40 bg-gray-50 rounded-lg flex items-end justify-between px-2">
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 60%"></div>
+                                    <span class="text-xs mt-1">一</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 45%"></div>
+                                    <span class="text-xs mt-1">二</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 70%"></div>
+                                    <span class="text-xs mt-1">三</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 55%"></div>
+                                    <span class="text-xs mt-1">四</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 85%"></div>
+                                    <span class="text-xs mt-1">五</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 65%"></div>
+                                    <span class="text-xs mt-1">六</span>
+                                </div>
+                                <div class="flex flex-col items-center w-1/7">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 75%"></div>
+                                    <span class="text-xs mt-1">日</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 知识点掌握情况 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold">知识点掌握</h3>
+                                <span class="text-primary text-sm">查看全部</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm">二次函数</span>
+                                        <span class="text-sm font-medium">92%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-100 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm">三角函数</span>
+                                        <span class="text-sm font-medium">78%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-100 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm">解析几何</span>
+                                        <span class="text-sm font-medium">65%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-100 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm">微积分</span>
+                                        <span class="text-sm font-medium">42%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-100 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 42%"></div>
+                                    </div>
+                                </div>
+                            </div>
+B                    </div>
+                </div>
+            </div>
+            <div class="tab-bar">
+                <div class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-home text-sm"></i>
+                    <span class="text-xs mt-1">首页</span>
+                </div>
+                <div class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-search text-sm"></i>
+                    <span class="text-xs mt-1">搜索</span>
+                </div>
+                <div class="flex flex-col items-center text-primary">
+                    <i class="fas fa-book-open text-sm"></i>
+                    <span class="text-xs mt-1">学习</span>
+                </div>
+                <div class="flex flex-col items-center text-gray-500">
+                    <i class="fas fa-user text-sm"></i>
+                    <span class="text-xs mt-1">我的</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

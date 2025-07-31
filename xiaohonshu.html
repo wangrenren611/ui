@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书 & B站风格微信小程序原型</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=PingFang+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF2442',
+                        'primary-light': '#FF6B8B',
+                        'secondary': '#00B0FF',
+                        'neutral-50': '#F9FAFB',
+                        'neutral-100': '#F3F4F6',
+                        'neutral-200': '#E5E7EB',
+                        'neutral-300': '#D1D5DB',
+                        'neutral-400': '#9CA3AF',
+                        'neutral-500': '#6B7280',
+                        'neutral-600': '#4B5563',
+                        'neutral-700': '#374151',
+                        'neutral-800': '#1F2937',
+                        'neutral-900': '#111827',
+                    },
+                    fontFamily: {
+                        'sans': ['PingFang SC', 'system-ui', 'sans-serif']
+                    },
+                    borderRadius: {
+                        'xl': '20px',
+                        '2xl': '24px'
+                    },
+                    boxShadow: {
+                        'sm': '0 2px 8px rgba(0, 0, 0, 0.08)',
+                        'md': '0 4px 12px rgba(0, 0, 0, 0.12)',
+                        'lg': '0 8px 24px rgba(0, 0, 0, 0.15)'
+                    },
+                    zIndex: {
+                        '0': '0',
+                        '10': '10',
+                        '20': '20',
+                        '30': '30',
+                        '40': '40',
+                        '50': '50',
+                        '100': '100'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media (prefers-reduced-motion: no-preference) {
+            .iphone-shell {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .iphone-shell:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            }
+        }
+        
+        .iphone-shell {
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 407px;
+            height: 812px;
+            position: relative;
+        }
+        
+        .iphone-screen {
+            background: linear-gradient(145deg, #f0f2f5 0%, #e4e7eb 100%);
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .iphone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 44px;
+            background: white;
+            border-radius: 0 0 20px 20px;
+            z-index: 50;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            position: relative;
+            z-index: 40;
+        }
+        
+        .content-area {
+            height: calc(100% - 44px - 34px);
+            position: relative;
+        }
+        
+        .bottom-safe-area {
+            height: 34px;
+            background: white;
+        }
+        
+        .page-content {
+            height: calc(100% - 50px);
+            overflow-y-auto;
+        }
+        
+        .tab-bar {
+            height: 50px;
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .fab {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(255, 36, 66, 0.4);
+        }
+        
+        .card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .skeleton {
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .toast {
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s 2.7s ease-in forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-10 px-4">
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-neutral-800 mb-4">小红书 & B站风格微信小程序原型</h1>
+            <p class="text-neutral-600 max-w-2xl mx-auto">
+                高保真原型展示 - 全栈产品设计师 + AI产品经理视角 | 采用扁平化设计语言，Z轴空间分层，安全区域适配
+            </p>
+        </header>
+        
+        <!-- iPhone Showcase Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- 首页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 首页内容 -->
+                        <div class="page-content">
+                            <!-- 搜索栏 -->
+                            <div class="p-4 bg-white z-20 relative">
+                                <div class="flex items-center bg-neutral-100 rounded-xl p-3">
+                                    <i class="fas fa-search text-neutral-400 mr-2"></i>
+                                    <input type="text" placeholder="搜索小红书笔记、用户" class="bg-transparent w-full outline-none text-sm">
+                                </div>
+                            </div>
+                            
+                            <!-- 分类标签 -->
+                            <div class="flex overflow-x-auto p-3 space-x-3 bg-white z-20 relative">
+                                <div class="bg-primary text-white px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm">推荐</div>
+                                <div class="bg-neutral-100 text-neutral-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">美妆</div>
+                                <div class="bg-neutral-100 text-neutral-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">穿搭</div>
+                                <div class="bg-neutral-100 text-neutral-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">美食</div>
+                                <div class="bg-neutral-100 text-neutral-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">旅行</div>
+                                <div class="bg-neutral-100 text-neutral-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">健身</div>
+                            </div>
+                            
+                            <!-- 内容流 -->
+                            <div class="p-3 space-y-4">
+                                <!-- 笔记卡片 1 -->
+                                <div class="card bg-white">
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500&q=80" 
+                                             class="w-full h-64 object-cover" alt="时尚穿搭">
+                                        <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full">12:34</div>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="flex items-center mb-2">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-8 h-8 rounded-full mr-2" alt="用户">
+                                            <span class="font-medium text-sm">时尚小达人</span>
+                                            <i class="fas fa-crown text-yellow-400 ml-1"></i>
+                                        </div>
+                                        <h3 class="font-bold text-base mb-1 line-clamp-1">夏日必备！3套绝美穿搭指南</h3>
+                                        <p class="text-neutral-600 text-sm line-clamp-2 mb-3">今天分享三套适合夏日的穿搭，从日常通勤到约会逛街都能轻松驾驭！搭配小tips也整理好了，快收藏吧～</p>
+                                        <div class="flex items-center justify-between text-neutral-500">
+                                            <div class="flex space-x-3">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-heart mr-1 text-red-500"></i>
+                                                    <span class="text-xs">1.2k</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-comment mr-1"></i>
+                                                    <span class="text-xs">245</span>
+                                                </div>
+                                            </div>
+                                            <i class="fas fa-bookmark"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 笔记卡片 2 -->
+                                <div class="card bg-white">
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500&q=80" 
+                                             class="w-full h-64 object-cover" alt="美妆教程">
+                                        <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full">5:21</div>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="flex items-center mb-2">
+                                            <img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-8 h-8 rounded-full mr-2" alt="用户">
+                                            <span class="font-medium text-sm">美妆博主Lily</span>
+                                        </div>
+                                        <h3 class="font-bold text-base mb-1 line-clamp-1">新手必看！5分钟日常妆容教程</h3>
+                                        <p class="text-neutral-600 text-sm line-clamp-2 mb-3">手残党也能学会的快速妆容，只需5分钟！附产品清单和详细步骤，拯救你的早八人生活～</p>
+                                        <div class="flex items-center justify-between text-neutral-500">
+                                            <div class="flex space-x-3">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-heart mr-1 text-red-500"></i>
+                                                    <span class="text-xs">3.5k</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-comment mr-1"></i>
+                                                    <span class="text-xs">892</span>
+                                                </div>
+                                            </div>
+                                            <i class="fas fa-bookmark"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部Tab栏 -->
+                        <div class="tab-bar">
+                            <div class="flex h-full">
+                                <div class="flex-1 flex flex-col items-center justify-center text-primary">
+                                    <i class="fas fa-home text-xl mb-1"></i>
+                                    <span class="text-xs font-medium">首页</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-compass text-xl mb-1"></i>
+                                    <span class="text-xs">发现</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-bell text-xl mb-1"></i>
+                                    <span class="text-xs">消息</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-user text-xl mb-1"></i>
+                                    <span class="text-xs">我</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                    
+                    <!-- FAB按钮 -->
+                    <div class="fab bg-primary text-white">
+                        <i class="fas fa-plus text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 视频页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 视频页内容 -->
+                        <div class="page-content">
+                            <!-- 顶部导航 -->
+                            <div class="bg-white z-20 relative">
+                                <div class="flex border-b">
+                                    <div class="flex-1 text-center py-3 font-medium border-b-2 border-primary text-primary">推荐</div>
+                                    <div class="flex-1 text-center py-3 font-medium text-neutral-600">热门</div>
+                                    <div class="flex-1 text-center py-3 font-medium text-neutral-600">关注</div>
+                                    <div class="flex-1 text-center py-3 font-medium text-neutral-600">直播</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 视频内容流 -->
+                            <div class="p-3">
+                                <!-- 视频卡片 1 -->
+                                <div class="card bg-white mb-4 overflow-hidden">
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=225&q=80" 
+                                             class="w-full h-48 object-cover" alt="科技视频">
+                                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">10:24</div>
+                                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex items-center">
+                                            <i class="fas fa-eye mr-1"></i> 12.5万
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="flex items-start">
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-8 h-8 rounded-full mr-2" alt="UP主">
+                                            <div class="flex-1">
+                                                <div class="flex justify-between items-start">
+                                                    <h3 class="font-bold text-sm line-clamp-1">iPhone 15 Pro深度评测：这些升级太香了！</h3>
+                                                    <i class="fas fa-ellipsis-h text-neutral-400"></i>
+                                                </div>
+                                                <p class="text-neutral-600 text-xs mt-1">数码达人 | 2.3万粉丝</p>
+                                                <div class="flex items-center mt-2 text-neutral-500 text-xs">
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-thumbs-up mr-1"></i>
+                                                        <span>5.2万</span>
+                                                    </div>
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-comment mr-1"></i>
+                                                        <span>1.2k</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-share mr-1"></i>
+                                                        <span>分享</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 视频卡片 2 -->
+                                <div class="card bg-white mb-4 overflow-hidden">
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1546587393-3d585c13be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=225&q=80" 
+                                             class="w-full h-48 object-cover" alt="美食视频">
+                                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">8:17</div>
+                                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex items-center">
+                                            <i class="fas fa-eye mr-1"></i> 8.7万
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="flex items-start">
+                                            <img src="https://randomuser.me/api/portraits/women/28.jpg" class="w-8 h-8 rounded-full mr-2" alt="UP主">
+                                            <div class="flex-1">
+                                                <div class="flex justify-between items-start">
+                                                    <h3 class="font-bold text-sm line-clamp-1">3分钟学会！米其林大厨的拿手意面</h3>
+                                                    <i class="fas fa-ellipsis-h text-neutral-400"></i>
+                                                </div>
+                                                <p class="text-neutral-600 text-xs mt-1">美食家 | 15.8万粉丝</p>
+                                                <div class="flex items-center mt-2 text-neutral-500 text-xs">
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-thumbs-up mr-1"></i>
+                                                        <span>9.8万</span>
+                                                    </div>
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-comment mr-1"></i>
+                                                        <span>3.5k</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-share mr-1"></i>
+                                                        <span>分享</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 视频卡片 3 -->
+                                <div class="card bg-white overflow-hidden">
+                                    <div class="relative">
+                                        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=225&q=80" 
+                                             class="w-full h-48 object-cover" alt="游戏视频">
+                                        <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">15:42</div>
+                                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex items-center">
+                                            <i class="fas fa-eye mr-1"></i> 24.3万
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="flex items-start">
+                                            <img src="https://randomuser.me/api/portraits/men/65.jpg" class="w-8 h-8 rounded-full mr-2" alt="UP主">
+                                            <div class="flex-1">
+                                                <div class="flex justify-between items-start">
+                                                    <h3 class="font-bold text-sm line-clamp-1">《原神》4.0版本深度攻略：新地图全探索指南</h3>
+                                                    <i class="fas fa-ellipsis-h text-neutral-400"></i>
+                                                </div>
+                                                <p class="text-neutral-600 text-xs mt-1">游戏攻略 | 42.7万粉丝</p>
+                                                <div class="flex items-center mt-2 text-neutral-500 text-xs">
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-thumbs-up mr-1"></i>
+                                                        <span>18.5万</span>
+                                                    </div>
+                                                    <div class="flex items-center mr-3">
+                                                        <i class="fas fa-comment mr-1"></i>
+                                                        <span>9.8k</span>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-share mr-1"></i>
+                                                        <span>分享</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部Tab栏 -->
+                        <div class="tab-bar">
+                            <div class="flex h-full">
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-home text-xl mb-1"></i>
+                                    <span class="text-xs">首页</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-primary">
+                                    <i class="fas fa-video text-xl mb-1"></i>
+                                    <span class="text-xs font-medium">视频</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-bell text-xl mb-1"></i>
+                                    <span class="text-xs">消息</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-user text-xl mb-1"></i>
+                                    <span class="text-xs">我</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                </div>
+            </div>
+            
+            <!-- 搜索页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 搜索页内容 -->
+                        <div class="page-content">
+                            <!-- 搜索栏 -->
+                            <div class="p-4 bg-white z-20 relative">
+                                <div class="flex items-center bg-neutral-100 rounded-xl p-3">
+                                    <i class="fas fa-search text-neutral-400 mr-2"></i>
+                                    <input type="text" placeholder="搜索小红书笔记、用户" class="bg-transparent w-full outline-none text-sm" value="夏日穿搭">
+                                    <i class="fas fa-times text-neutral-400 ml-2"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- 搜索结果分类 -->
+                            <div class="flex border-b bg-white z-20 relative">
+                                <div class="flex-1 text-center py-3 font-medium border-b-2 border-primary text-primary">笔记</div>
+                                <div class="flex-1 text-center py-3 font-medium text-neutral-600">用户</div>
+                                <div class="flex-1 text-center py-3 font-medium text-neutral-600">话题</div>
+                                <div class="flex-1 text-center py-3 font-medium text-neutral-600">直播</div>
+                            </div>
+                            
+                            <!-- 搜索结果 -->
+                            <div class="p-3">
+                                <!-- 搜索结果 1 -->
+                                <div class="flex mb-4">
+                                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                         class="w-20 h-20 rounded-xl object-cover mr-3" alt="搜索结果">
+                                    <div class="flex-1">
+                                        <div class="flex items-center mb-1">
+                                            <span class="bg-primary text-white text-xs px-2 py-0.5 rounded mr-2">推荐</span>
+                                            <span class="text-xs text-neutral-500">2023-08-15</span>
+                                        </div>
+                                        <h3 class="font-bold text-sm mb-1 line-clamp-1">夏日必备！3套绝美穿搭指南</h3>
+                                        <p class="text-neutral-600 text-xs line-clamp-2 mb-2">今天分享三套适合夏日的穿搭，从日常通勤到约会逛街都能轻松驾驭！搭配小tips也整理好了，快收藏吧～</p>
+                                        <div class="flex items-center text-neutral-500 text-xs">
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-heart mr-1 text-red-500"></i>
+                                                <span>1.2k</span>
+                                            </div>
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-comment mr-1"></i>
+                                                <span>245</span>
+                                            </div>
+                                            <div class="text-primary font-medium">夏日穿搭</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 搜索结果 2 -->
+                                <div class="flex mb-4">
+                                    <img src="https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                         class="w-20 h-20 rounded-xl object-cover mr-3" alt="搜索结果">
+                                    <div class="flex-1">
+                                        <div class="flex items-center mb-1">
+                                            <span class="bg-neutral-200 text-neutral-700 text-xs px-2 py-0.5 rounded mr-2">美妆</span>
+                                            <span class="text-xs text-neutral-500">2023-08-10</span>
+                                        </div>
+                                        <h3 class="font-bold text-sm mb-1 line-clamp-1">新手必看！5分钟日常妆容教程</h3>
+                                        <p class="text-neutral-600 text-xs line-clamp-2 mb-2">手残党也能学会的快速妆容，只需5分钟！附产品清单和详细步骤，拯救你的早八人生活～</p>
+                                        <div class="flex items-center text-neutral-500 text-xs">
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-heart mr-1 text-red-500"></i>
+                                                <span>3.5k</span>
+                                            </div>
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-comment mr-1"></i>
+                                                <span>892</span>
+                                            </div>
+                                            <div class="text-primary font-medium">夏日妆容</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 搜索结果 3 -->
+                                <div class="flex mb-4">
+                                    <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                         class="w-20 h-20 rounded-xl object-cover mr-3" alt="搜索结果">
+                                    <div class="flex-1">
+                                        <div class="flex items-center mb-1">
+                                            <span class="bg-neutral-200 text-neutral-700 text-xs px-2 py-0.5 rounded mr-2">旅行</span>
+                                            <span class="text-xs text-neutral-500">2023-08-05</span>
+                                        </div>
+                                        <h3 class="font-bold text-sm mb-1 line-clamp-1">小众海岛推荐：人少景美的夏日度假地</h3>
+                                        <p class="text-neutral-600 text-xs line-clamp-2 mb-2">厌倦了人挤人的热门景点？这篇攻略带你发现5个鲜为人知的绝美海岛，享受真正的夏日假期！</p>
+                                        <div class="flex items-center text-neutral-500 text-xs">
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-heart mr-1 text-red-500"></i>
+                                                <span>2.8k</span>
+                                            </div>
+                                            <div class="flex items-center mr-3">
+                                                <i class="fas fa-comment mr-1"></i>
+                                                <span>632</span>
+                                            </div>
+                                            <div class="text-primary font-medium">夏日旅行</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部Tab栏 -->
+                        <div class="tab-bar">
+                            <div class="flex h-full">
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-home text-xl mb-1"></i>
+                                    <span class="text-xs">首页</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-video text-xl mb-1"></i>
+                                    <span class="text-xs">视频</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-primary">
+                                    <i class="fas fa-search text-xl mb-1"></i>
+                                    <span class="text-xs font-medium">搜索</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-user text-xl mb-1"></i>
+                                    <span class="text-xs">我</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                </div>
+            </div>
+            
+            <!-- 消息页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 消息页内容 -->
+                        <div class="page-content">
+                            <!-- 标题 -->
+                            <div class="bg-white z-20 relative">
+                                <div class="p-4 border-b">
+                                    <h2 class="text-lg font-bold">消息</h2>
+                                </div>
+                            </div>
+                            
+                            <!-- 消息列表 -->
+                            <div class="p-3">
+                                <!-- 消息 1 -->
+                                <div class="flex items-center mb-4 pb-3 border-b">
+                                    <div class="relative mr-3">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full" alt="用户">
+                                        <span class="absolute bottom-0 right-0 bg-green-500 w-3 h-3 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-bold text-sm">时尚小达人</h3>
+                                            <span class="text-xs text-neutral-500">2小时前</span>
+                                        </div>
+                                        <p class="text-neutral-600 text-sm line-clamp-1 mt-1">你的笔记被点赞了！快去看看吧～</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="bg-primary text-white text-xs px-2 py-0.5 rounded mr-2">1</span>
+                                            <span class="text-xs text-neutral-500">互动提醒</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 消息 2 -->
+                                <div class="flex items-center mb-4 pb-3 border-b">
+                                    <div class="relative mr-3">
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full" alt="用户">
+                                        <span class="absolute bottom-0 right-0 bg-green-500 w-3 h-3 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-bold text-sm">数码达人</h3>
+                                            <span class="text-xs text-neutral-500">昨天</span>
+                                        </div>
+                                        <p class="text-neutral-600 text-sm line-clamp-1 mt-1">回复了你的评论：这个评测太专业了！</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="bg-primary text-white text-xs px-2 py-0.5 rounded mr-2">2</span>
+                                            <span class="text-xs text-neutral-500">评论</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 消息 3 -->
+                                <div class="flex items-center mb-4 pb-3 border-b">
+                                    <div class="relative mr-3">
+                                        <img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-12 h-12 rounded-full" alt="用户">
+                                        <span class="absolute bottom-0 right-0 bg-green-500 w-3 h-3 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-bold text-sm">美妆博主Lily</h3>
+                                            <span class="text-xs text-neutral-500">2天前</span>
+                                        </div>
+                                        <p class="text-neutral-600 text-sm line-clamp-1 mt-1">关注了你！欢迎交流美妆心得～</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-neutral-500">系统通知</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 消息 4 -->
+                                <div class="flex items-center mb-4 pb-3 border-b">
+                                    <div class="relative mr-3">
+                                        <div class="w-12 h-12 rounded-full bg-neutral-200 flex items-center justify-center">
+                                            <i class="fas fa-users text-xl text-neutral-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h3 class="font-bold text-sm">小红书官方</h3>
+                                            <span class="text-xs text-neutral-500">3天前</span>
+                                        </div>
+                                        <p class="text-neutral-600 text-sm line-clamp-1 mt-1">你的笔记"夏日穿搭指南"已通过审核！</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-neutral-500">系统通知</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部Tab栏 -->
+                        <div class="tab-bar">
+                            <div class="flex h-full">
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-home text-xl mb-1"></i>
+                                    <span class="text-xs">首页</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-video text-xl mb-1"></i>
+                                    <span class="text-xs">视频</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-primary">
+                                    <i class="fas fa-bell text-xl mb-1"></i>
+                                    <span class="text-xs font-medium">消息</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-user text-xl mb-1"></i>
+                                    <span class="text-xs">我</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                </div>
+            </div>
+            
+            <!-- 我的页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 我的页内容 -->
+                        <div class="page-content">
+                            <!-- 个人资料 -->
+                            <div class="bg-gradient-to-r from-primary to-primary-light p-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/22.jpg" class="w-16 h-16 rounded-full border-3 border-white mr-4" alt="用户">
+                                    <div class="flex-1">
+                                        <div class="flex items-center mb-1">
+                                            <h2 class="text-white font-bold text-lg">小红书用户2023</h2>
+                                            <i class="fas fa-crown text-yellow-300 ml-2"></i>
+                                        </div>
+                                        <div class="flex text-xs text-white opacity-90">
+                                            <span class="mr-3">笔记 128</span>
+                                            <span class="mr-3">关注 245</span>
+                                            <span>粉丝 1.2k</span>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-cog text-white text-xl"></i>
+                                </div>
+                                
+                                <div class="mt-4 bg-white rounded-2xl p-3 shadow-sm">
+                                    <div class="flex justify-around">
+                                        <div class="text-center">
+                                            <div class="font-bold text-lg">32</div>
+                                            <div class="text-xs text-neutral-600">获赞</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="font-bold text-lg">18</div>
+                                            <div class="text-xs text-neutral-600">收藏</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="font-bold text-lg">24</div>
+                                            <div class="text-xs text-neutral-600">关注</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="font-bold text-lg">128</div>
+                                            <div class="text-xs text-neutral-600">粉丝</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 功能列表 -->
+                            <div class="p-3 space-y-3">
+                                <!-- 我的笔记 -->
+                                <div class="bg-white rounded-2xl p-4 card">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-book text-primary text-xl mr-3"></i>
+                                        <h3 class="font-bold text-base">我的笔记</h3>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                             class="w-full h-20 rounded-lg object-cover" alt="笔记">
+                                        <img src="https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                             class="w-full h-20 rounded-lg object-cover" alt="笔记">
+                                        <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f28?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80" 
+                                             class="w-full h-20 rounded-lg object-cover" alt="笔记">
+                                    </div>
+                                </div>
+                                
+                                <!-- 常用功能 -->
+                                <div class="bg-white rounded-2xl p-4 card">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-th-large text-primary text-xl mr-3"></i>
+                                        <h3 class="font-bold text-base">常用功能</h3>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-3">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center mb-2">
+                                                <i class="fas fa-heart text-primary"></i>
+                                            </div>
+                                            <span class="text-xs">收藏</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center mb-2">
+                                                <i class="fas fa-history text-primary"></i>
+                                            </div>
+                                            <span class="text-xs">历史</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center mb-2">
+                                                <i class="fas fa-ticket-alt text-primary"></i>
+                                            </div>
+                                            <span class="text-xs">优惠券</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center mb-2">
+                                                <i class="fas fa-gift text-primary"></i>
+                                            </div>
+                                            <span class="text-xs">福利</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 设置 -->
+                                <div class="bg-white rounded-2xl p-4 card">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-cog text-primary text-xl mr-3"></i>
+                                        <h3 class="font-bold text-base">设置</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部Tab栏 -->
+                        <div class="tab-bar">
+                            <div class="flex h-full">
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-home text-xl mb-1"></i>
+                                    <span class="text-xs">首页</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-video text-xl mb-1"></i>
+                                    <span class="text-xs">视频</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-neutral-500">
+                                    <i class="fas fa-bell text-xl mb-1"></i>
+                                    <span class="text-xs">消息</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center justify-center text-primary">
+                                    <i class="fas fa-user text-xl mb-1"></i>
+                                    <span class="text-xs font-medium">我</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                </div>
+            </div>
+            
+            <!-- 发布页 -->
+            <div class="iphone-shell bg-gray-900 p-1.5">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    <div class="status-bar">
+                        <div class="text-xs text-neutral-500">9:41</div>
+                        <div class="flex space-x-2 text-xs text-neutral-500">
+                            <i class="fas fa-signal"></i>
+                            <i class="fas fa-wifi"></i>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area bg-neutral-50">
+                        <!-- 发布页内容 -->
+                        <div class="page-content">
+                            <!-- 顶部导航 -->
+                            <div class="bg-white z-20 relative border-b">
+                                <div class="flex items-center p-3">
+                                    <i class="fas fa-arrow-left text-xl mr-3"></i>
+                                    <h2 class="font-bold text-lg flex-1 text-center">发布笔记</h2>
+                                    <button class="text-primary font-medium">发布</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 发布内容 -->
+                            <div class="p-4">
+                                <!-- 封面图片 -->
+                                <div class="border-2 border-dashed border-neutral-300 rounded-2xl p-6 mb-4 text-center">
+                                    <i class="fas fa-camera text-3xl text-neutral-400 mb-2"></i>
+                                    <p class="text-neutral-500 text-sm">点击添加封面图片</p>
+                                </div>
+                                
+                                <!-- 标题 -->
+                                <div class="mb-4">
+                                    <input type="text" placeholder="添加标题..." class="w-full border-b border-neutral-200 pb-2 text-lg font-medium focus:outline-none">
+                                </div>
+                                
+                                <!-- 正文 -->
+                                <div class="mb-6">
+                                    <textarea placeholder="分享你的想法..." rows="6" class="w-full border border-neutral-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"></textarea>
+                                </div>
+                                
+                                <!-- 话题标签 -->
+                                <div class="mb-6">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fas fa-hashtag text-primary mr-2"></i>
+                                        <span class="font-medium">话题</span>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <div class="bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-full text-sm">#夏日穿搭</div>
+                                        <div class="bg-neutral-100 text-neutral-600 px-3 py-1 rounded-full text-sm">#旅行攻略</div>
+                                        <div class="bg-neutral-100 text-neutral-600 px-3 py-1 rounded-full text-sm">#美食探店</div>
+                                        <div class="bg-neutral-100 text-neutral-600 px-3 py-1 rounded-full text-sm flex items-center">
+                                            <i class="fas fa-plus mr-1"></i> 添加话题
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 位置 -->
+                                <div class="mb-6">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                                        <span class="font-medium">位置</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-neutral-100 rounded-xl">
+                                        <i class="fas fa-map-marker-alt text-neutral-500 mr-2"></i>
+                                        <span class="text-neutral-600">未设置位置</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- 可见范围 -->
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <i class="fas fa-globe-asia text-primary mr-2"></i>
+                                        <span class="font-medium">可见范围</span>
+                                    </div>
+                                    <div class="flex justify-between p-3 bg-neutral-100 rounded-xl">
+                                        <span class="text-neutral-600">公开</span>
+                                        <i class="fas fa-chevron-right text-neutral-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部安全区域 - 发布页无Tab栏 -->
+                        <div class="h-0"></div>
+                    </div>
+                    
+                    <div class="bottom-safe-area"></div>
+                    
+                    <!-- Toast通知 -->
+                    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 text-white px-4 py-2 rounded-full text-sm toast z-100">
+                        <i class="fas fa-check-circle mr-2"></i> 发布成功！
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设计说明 -->
+        <div class="max-w-4xl mx-auto mt-16 bg-white rounded-2xl p-6 shadow-md">
+            <h2 class="text-2xl font-bold text-neutral-800 mb-4">设计说明</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">设计理念</h3>
+                    <p class="text-neutral-600">融合小红书与B站核心体验，打造符合微信小程序规范的社交内容平台。采用扁平化设计语言，通过Z轴空间分层构建视觉层次，确保内容聚焦与操作流畅性。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">关键设计规范</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-neutral-600">
+                        <li><span class="font-medium">Z轴分层：</span>背景(z-0) - 中景卡片(z-10) - 前景操作元素(z-20) - FAB(z-30) - Toast(z-100)</li>
+                        <li><span class="font-medium">色彩系统：</span>主色#FF2442(小红书红)，辅色#00B0FF(科技蓝)，中性色阶梯式应用</li>
+                        <li><span class="font-medium">安全区域：</span>顶部44px状态栏，底部34px安全区域，内容区域自适应滚动</li>
+                        <li><span class="font-medium">交互细节：</span>底部4栏Tab导航、FAB浮动按钮、骨架屏加载、Toast反馈、Action Sheet操作</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">技术实现</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-neutral-600">
+                        <li>单HTML文件整合所有页面，使用TailwindCSS实现响应式布局</li>
+                        <li>iPhone 14模拟器尺寸407×812px，每行最多3个，支持上下滚动查看</li>
+                        <li>Unsplash高质量图片资源，FontAwesome图标系统，PingFang SC系统字体</li>
+                        <li>圆角系统：卡片20px，按钮12px，输入框16px，统一阴影层次</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟Toast显示效果
+        setTimeout(() => {
+            const toast = document.querySelector('.toast');
+            if (toast) {
+                toast.classList.add('toast');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

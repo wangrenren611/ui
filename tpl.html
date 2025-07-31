@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '',     // 主色调
+                        secondary: '',   // 辅助色
+                        accent: '',      // 强调色
+                        gradientStart: '',
+                        gradientEnd: '',
+                        neutral: {
+                            100: '',
+                            200: '',
+                            300: '',
+                            400: '',
+                            500: '',
+                            600: '',
+                            700: '',
+                            800: '',
+                            900: '',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                    },
+                    height: {
+                        'screen-iphone': '812px',
+                    },
+                    width: {
+                        'iphone': '407px',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 400;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 500;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 600;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZg.ttf) format('truetype');
+            }
+            @font-face {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 700;
+                src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZg.ttf) format('truetype');
+            }
+            
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .iphone-frame {
+                width: 407px;
+                height: 812px;
+                border: 16px solid #111;
+                border-radius: 40px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 30px rgba(0,0,0,0.25);
+                transition: all 0.3s ease;
+            }
+            .iphone-frame:hover {
+                box-shadow: 0 0 40px rgba(79, 70, 229, 0.3);
+                transform: translateY(-5px);
+            }
+            .iphone-notch {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 160px;
+                height: 30px;
+                background-color: #111;
+                border-bottom-left-radius: 18px;
+                border-bottom-right-radius: 18px;
+                z-index: 10;
+            }
+            .iphone-screen {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-top: 44px;
+                padding-bottom: 34px;
+                background-image: linear-gradient(to bottom, rgba(249, 250, 251, 0.8), rgba(249, 250, 251, 0.4));
+            }
+            .safe-area-top {
+                padding-top: env(safe-area-inset-top);
+            }
+            .safe-area-bottom {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            .tab-bar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 60px;
+                background-color: white;
+                border-top: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 50;
+                box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+            }
+        
+          
+            .skeleton {
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+            }
+            @keyframes skeleton-loading {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+           
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-neutral-100 to-neutral-200 p-4 md:p-8 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent"><!--- 应用名称 --></h1>
+            <p class="text-neutral-600 mt-2 max-w-2xl mx-auto"><!---  应用描述 --></p>
+        </div>
+        
+        <div class="flex flex-wrap gap-8 justify-center">
+            <!--- 实例页面1--->
+            <div class="iphone-frame">
+                <div class="iphone-notch"></div>
+                <div class="iphone-screen">
+                    <div class="p-4">
+                        <!-- 内容区域 -->
+                    </div>
+                </div>
+                <!--底部tab -->
+                <div class="tab-bar">
+                    <div class="tab-item flex flex-col items-center text-primary">
+                        <i class="fas fa-home text-base"></i>
+                        <span class="text-xs mt-1">tab1</span>
+                    </div>
+                    <div class="tab-item flex flex-col items-center text-neutral-500">
+                        <i class="fas fa-search text-base"></i>
+                        <span class="text-xs mt-1">tab2</span>
+                    </div>
+                    <div class="tab-item flex flex-col items-center text-neutral-500">
+                        <i class="fas fa-book-open text-base"></i>
+                        <span class="text-xs mt-1">tab3</span>
+                    </div>
+                    <div class="tab-item flex flex-col items-center text-neutral-500">
+                        <i class="fas fa-user text-base"></i>
+                        <span class="text-xs mt-1">tab4</span>
+                    </div>
+                </div>
+                <div class="fab-button">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+            </div>
+            <!---其他页面-->
+        </div>
+
+        <!--- 应用设计思路、应用说明、应用功能介绍 -->
+    </div>
+</body>
+</html>
