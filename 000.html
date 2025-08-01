@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>留学支付官网</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @layer base {
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZg.ttf') format('truetype');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fMZg.ttf') format('truetype');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZg.ttf') format('truetype');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZg.ttf') format('truetype');
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6366F1',
+            secondary: '#F59E0B',
+            accent: '#10B981',
+            gradientStart: '#6366F1',
+            gradientEnd: '#F59E0B',
+            neutral: {
+              100: '#F9FAFB',
+              200: '#F3F4F6',
+              300: '#E5E7EB',
+              400: '#D1D5DB',
+              500: '#9CA3AF',
+              600: '#6B7280',
+              700: '#4B5563',
+              800: '#334155',
+              900: '#1F2937',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+          },
+          height: {
+            'screen-iphone': '812px',
+          },
+          width: {
+            'iphone': '407px',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans">
+  <div class="min-h-screen">
+    <nav class="bg-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <a href="#home" class="text-2xl font-bold text-primary">留学支付</a>
+            </div>
+          </div>
+          <div class="hidden md:flex md:space-x-8">
+            <a href="#home" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">首页</a>
+            <a href="#services" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">服务</a>
+            <a href="#payment" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">支付</a>
+            <a href="#security" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">安全</a>
+            <a href="#faq" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">常见问题</a>
+            <a href="#contact" class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">联系我们</a>
+          </div>
+          <div class="hidden md:block">
+            <div class="flex items-center">
+              <a href="#login" class="px-4 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">登录</a>
+              <a href="#register" class="px-4 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-primary">注册</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="min-h-screen">
+      <section id="home" class="pt-24 pb-12 bg-neutral-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="max-w-md">
+              <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                <span class="block">留学支付</span>
+                <span class="block text-primary">让留学更简单</span>
+              </h1>
+              <p class="mt-6 text-lg text-gray-600">
+                一站式留学支付解决方案，安全、便捷、快速。
+              </p>
+              <div class="mt-8">
+                <a href="#payment" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-primary hover:text-white transition duration-150">
+                  开始支付
+                </a>
+              </div>
+            </div>
+            <div class="mt-10 md:mt-0 md:ml-12">
+              <div class="bg-white shadow-xl rounded-xl overflow-hidden">
+                <div class="flex justify-center items-center h-64">
+                  <div class="text-4xl text-primary">💰</div>
+                </div>
+                <div class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-500">支付成功率</div>
+                    <div class="text-lg font-medium">99.9%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              我们的服务
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+              为留学生提供安全、便捷、快速的支付服务。
+            </p>
+          </div>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-primary text-white rounded-full">
+                <i class="fas fa-check text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">安全支付</h3>
+              <p class="mt-2 text-gray-600">
+                我们采用国际标准加密技术，保障您的支付安全。
+              </p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-secondary text-white rounded-full">
+                <i class="fas fa-clock text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">快速到账</h3>
+              <p class="mt-2 text-gray-600">
+                支付后24小时内到账，确保您的资金安全。
+              </p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-accent text-white rounded-full">
+                <i class="fas fa-credit-card text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">多种支付方式</h3>
+              <p class="mt-2 text-gray-600">
+                支持信用卡、支付宝、微信等多种支付方式。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="payment" class="py-16 bg-neutral-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              支付流程
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+              三步完成支付，安全、便捷、快速。
+            </p>
+          </div>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-primary text-white rounded-full">
+                <i class="fas fa-shopping-cart text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">选择服务</h3>
+              <p class="mt-2 text-gray-600">
+                选择您需要的留学服务，如学费、住宿费等。
+              </p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-secondary text-white rounded-full">
+                <i class="fas fa-credit-card text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">支付</h3>
+              <p class="mt-2 text-gray-600">
+                选择支付方式并完成支付。
+              </p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-accent text-white rounded-full">
+                <i class="fas fa-check-circle text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">确认</h3>
+              <p class="mt-2 text-gray-600">
+                确认支付成功，并获取付款凭证。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="security" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              安全保障
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+              我们采用国际标准加密技术，保障您的支付安全。
+            </p>
+          </div>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-neutral-50 rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-primary text-white rounded-full">
+                <i class="fas fa-shield-alt text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">数据加密</h3>
+              <p class="mt-2 text-gray-600">
+                所有数据采用国际标准加密技术，确保您的信息安全。
+              </p>
+            </div>
+            <div class="bg-neutral-50 rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-secondary text-white rounded-full">
+                <i class="fas fa-lock text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">支付安全</h3>
+              <p class="mt-2 text-gray-600">
+                所有支付操作均经过安全验证，确保您的资金安全。
+              </p>
+            </div>
+            <div class="bg-neutral-50 rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-accent text-white rounded-full">
+                <i class="fas fa-compass text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">专业团队</h3>
+              <p class="mt-2 text-gray-600">
+                我们有一支专业的团队，为您提供全方位的支付服务。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="py-16 bg-neutral-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              常见问题
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+              关于支付的常见问题解答。
+            </p>
+          </div>
+          <div class="mt-12">
+            <div class="max-w-3xl mx-auto">
+              <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="text-lg font-medium text-gray-900">Q: 支付后多久能到账？</div>
+                <div class="mt-2 text-gray-600">A: 支付后24小时内到账，确保您的资金安全。</div>
+              </div>
+              <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+                <div class="text-lg font-medium text-gray-900">Q: 支持哪些支付方式？</div>
+                <div class="mt-2 text-gray-600">A: 支持信用卡、支付宝、微信等多种支付方式。</div>
+              </div>
+              <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+                <div class="text-lg font-medium text-gray-900">Q: 支付失败怎么办？</div>
+                <div class="mt-2 text-gray-600">A: 支付失败请联系客服，我们将为您处理。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              联系我们
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+              如有任何问题，请随时联系我们。
+            </p>
+          </div>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-neutral-50 rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-primary text-white rounded-full">
+                <i class="fas fa-map-marker-alt text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">地址</h3>
+              <p class="mt-2 text-gray-600">
+                北京市朝阳区光华路1号。
+              </p>
+            </div>
+            <div class="bg-neutral-50 rounded-xl shadow-md p-6">
+              <div class="flex items-center justify-center h-16 bg-secondary text-white rounded-full">
+                <i class="fas fa-phone text-xl"></i>
+              </div>
+              <h3 class="mt-6 text-lg font-medium text-gray-900">电话</h3>
+              <p class="mt-2 text-gray-600">
+                010-12345678。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="bg-gray-100 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="text-gray-600">
+            <p>&copy; 2023 留学支付. 保留所有权利。</p>
+          </div>
+          <div class="mt-6 md:mt-0 flex space-x-6">
+            <a href="#" class="text-gray-500 hover:text-gray-700">隐私政策</a>
+            <a href="#" class="text-gray-500 hover:text-gray-700">服务条款</a>
+            <a href="#" class="text-gray-500 hover:text-gray-700">联系我们</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

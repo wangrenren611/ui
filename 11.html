@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>知学AI - 智能学习助手</title>
+    <title>GlobalPay - 留学支付专家</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+        
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3B82F6',     // 智慧蓝
-                        secondary: '#10B981',   // 成长绿
-                        accent: '#F59E0B',      // 活力橙
-                        gradientStart: '#3B82F6',
-                        gradientEnd: '#8B5CF6',
+                        primary: 'oklch(0.705 0.213 47.604)',
+                        secondary: 'oklch(0.967 0.001 286.375)',
+                        accent: 'oklch(0.577 0.245 27.325)',
+                        gradientStart: 'oklch(0.705 0.213 47.604',
+                        gradientEnd: 'oklch(0.398 0.07 227.392)',
                         neutral: {
-                            100: '#F9FAFB',
-                            200: '#F3F4F6',
-                            300: '#E5E7EB',
-                            400: '#D1D5DB',
-                            500: '#9CA3AF',
-                            600: '#6B7280',
-                            700: '#4B5563',
-                            800: '#1F2937',
-                            900: '#111827',
+                            100: 'oklch(1 0 0)',
+                            200: 'oklch(0.967 0.001 286.375)',
+                            300: 'oklch(0.92 0.004 286.32)',
+                            400: 'oklch(0.85 0.006 286.23)',
+                            500: 'oklch(0.75 0.01 286.07)',
+                            600: 'oklch(0.65 0.013 285.93)',
+                            700: 'oklch(0.552 0.016 285.938)',
+                            800: 'oklch(0.35 0.01 285.84)',
+                            900: 'oklch(0.141 0.005 285.823)',
                         }
                     },
                     fontFamily: {
@@ -83,986 +84,829 @@
             .content-auto {
                 content-visibility: auto;
             }
-            .iphone-frame {
-                width: 407px;
-                height: 812px;
-                border: 16px solid #111;
-                border-radius: 40px;
-                position: relative;
-                overflow: hidden;
-                box-shadow: 0 0 30px rgba(0,0,0,0.25);
-                transition: all 0.3s ease;
-                background-color: #F3F4F6;
-            }
-            .iphone-frame:hover {
-                box-shadow: 0 0 40px rgba(79, 70, 229, 0.3);
-                transform: translateY(-5px);
-            }
-            .iphone-notch {
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 160px;
-                height: 30px;
-                background-color: #111;
-                border-bottom-left-radius: 18px;
-                border-bottom-right-radius: 18px;
-                z-index: 10;
-            }
-            .iphone-screen {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: white;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                padding-top: 44px;
-                padding-bottom:72px;
-                background-image: linear-gradient(to bottom, rgba(249, 250, 251, 0.8), rgba(249, 250, 251, 0.4));
-            }
-            .safe-area-top {
-                padding-top: env(safe-area-inset-top);
-            }
-            .safe-area-bottom {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-            .tab-bar {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 60px;
-                background-color: white;
-                border-top: 1px solid #e5e7eb;
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 50;
-                box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
-            }
-            .fab-button {
-                position: absolute;
-                right: 24px;
-                bottom: 84px;
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #3B82F6, #8B5CF6);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            .interaction-layer {
                 z-index: 100;
+                opacity: 1;
+            }
+            .content-layer {
+                z-index: 50;
+                opacity: 0.7;
+            }
+            .background-layer {
+                z-index: 0;
+                opacity: 0.3;
+            }
+            .text-balance {
+                text-wrap: balance;
+            }
+            .payment-card {
                 transition: all 0.3s ease;
             }
-            .fab-button:hover {
+            .payment-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+            }
+            .nav-link {
+                position: relative;
+            }
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -2px;
+                left: 0;
+                background-color: oklch(0.623 0.214 259.815);
+                transition: width 0.3s ease;
+            }
+            .nav-link:hover::after {
+                width: 100%;
+            }
+            .btn-hover-effect {
+                transition: all 0.3s ease;
+            }
+            .btn-hover-effect:hover {
                 transform: scale(1.05);
-                box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
             }
-            .question-card {
+            .faq-item {
                 transition: all 0.3s ease;
-                z-index: 50;
             }
-            .question-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            }
-            .knowledge-node {
-                position: relative;
-                padding: 12px;
-                border-radius: 12px;
-                background-color: white;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                z-index: 50;
-            }
-            .bg-subject-math {
-                background-image: linear-gradient(to bottom right, rgba(99, 102, 241, 0.1), rgba(129, 140, 248, 0.15));
-            }
-            .bg-subject-science {
-                background-image: linear-gradient(to bottom right, rgba(16, 185, 129, 0.1), rgba(110, 231, 183, 0.15));
-            }
-            .bg-subject-language {
-                background-image: linear-gradient(to bottom right, rgba(245, 158, 11, 0.1), rgba(252, 211, 77, 0.15));
-            }
-            .chat-bubble-ai {
-                background-color: #F9FAFB;
-                border-radius: 18px 18px 18px 4px;
-                position: relative;
-                z-index: 50;
-            }
-            .chat-bubble-user {
-                background-color: #3B82F6;
-                color: white;
-                border-radius: 18px 18px 4px 18px;
-                position: relative;
-                z-index: 50;
-            }
-            .progress-ring {
-                transition: stroke-dashoffset 0.5s ease;
-            }
-            .subject-icon {
-                width: 40px;
-                height: 40px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .skeleton-loader {
-                background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
-                background-size: 200% 100%;
-                animation: loading 1.5s infinite;
-            }
-            @keyframes loading {
-                0% { background-position: 200% 0; }
-                100% { background-position: -200% 0; }
-            }
-            .answer-option {
-                transition: all 0.2s ease;
-            }
-            .answer-option:hover {
-                transform: translateY(-2px);
-            }
-            .ai-response-card {
-                z-index: 50;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            .faq-item:hover {
+                background-color: oklch(0.967 0.001 286.375);
             }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-neutral-100 to-neutral-200 p-4 md:p-8 min-h-screen">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-10">
-            <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">知学AI - 智能学习助手</h1>
-            <p class="text-neutral-600 mt-2 max-w-2xl mx-auto">融合AI技术的智能学习平台，个性化学习路径与实时辅导</p>
+<body class="bg-neutral-100 min-h-screen">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-100 transition-all duration-300">
+        <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="text-2xl font-bold text-primary flex items-center">
+                    <i class="fas fa-globe-americas mr-2"></i>
+                    <span>GlobalPay</span>
+                </div>
+            </div>
+            
+            <!-- 桌面导航 -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link text-neutral-800 hover:text-primary font-medium">首页</a>
+                <a href="#services" class="nav-link text-neutral-800 hover:text-primary font-medium">支付服务</a>
+                <a href="#process" class="nav-link text-neutral-800 hover:text-primary font-medium">支付流程</a>
+                <a href="#fees" class="nav-link text-neutral-800 hover:text-primary font-medium">费用说明</a>
+                <a href="#testimonials" class="nav-link text-neutral-800 hover:text-primary font-medium">用户评价</a>
+                <a href="#faq" class="nav-link text-neutral-800 hover:text-primary font-medium">常见问题</a>
+            </nav>
+            
+            <!-- 登录/注册按钮 -->
+            <div class="hidden md:flex items-center space-x-4">
+                <button class="px-4 py-2 text-primary font-medium hover:text-primary/80 transition">登录</button>
+                <button class="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition btn-hover-effect">立即注册</button>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-neutral-800" id="menuBtn">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
         </div>
         
-        <div class="flex flex-wrap gap-8 justify-center">
-            <!-- 页面1：首页（学习仪表盘） -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 顶部状态栏 -->
-                        <div class="flex justify-between items-center mb-6">
-                            <div class="text-xl font-bold text-neutral-800">今日学习</div>
-                            <div class="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center">
-                                <i class="fas fa-bell text-neutral-600"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- 学习进度 -->
-                        <div class="bg-white rounded-2xl p-5 shadow-md mb-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <div>
-                                    <h3 class="font-semibold text-neutral-700">数学学习进度</h3>
-                                    <p class="text-sm text-neutral-500">函数与导数</p>
-                                </div>
-                                <div class="text-primary font-bold">68%</div>
-                            </div>
-                            <div class="w-full bg-neutral-200 rounded-full h-2.5 mb-4">
-                                <div class="bg-primary h-2.5 rounded-full" style="width: 68%"></div>
-                            </div>
-                            <div class="flex justify-between text-sm text-neutral-600">
-                                <span>今日目标: 30分钟</span>
-                                <span>已完成: 18分钟</span>
-                            </div>
-                        </div>
-                        
-                        <!-- 学习卡片 -->
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 question-card">
-                                <div class="bg-primary bg-opacity-10 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-lightbulb text-primary text-lg"></i>
-                                </div>
-                                <h3 class="font-semibold text-neutral-800 mb-1">待复习题目</h3>
-                                <p class="text-2xl font-bold text-primary">12</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 question-card">
-                                <div class="bg-secondary bg-opacity-10 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-fire text-secondary text-lg"></i>
-                                </div>
-                                <h3 class="font-semibold text-neutral-800 mb-1">连续学习</h3>
-                                <p class="text-2xl font-bold text-secondary">7天</p>
-                            </div>
-                        </div>
-                        
-                        <!-- 推荐学习 -->
-                        <div class="mb-4">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-neutral-800">推荐学习内容</h3>
-                                <a href="#" class="text-sm text-primary font-medium">查看全部</a>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="bg-white p-4 rounded-xl shadow-sm flex items-start question-card">
-                                    <div class="subject-icon bg-subject-math mr-3">
-                                        <i class="fas fa-calculator text-indigo-500"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-medium text-neutral-800">三角函数应用</h4>
-                                        <div class="flex items-center text-sm text-neutral-500 mt-1">
-                                            <span class="mr-3">5道题</span>
-                                            <span>难度: 中等</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-4 rounded-xl shadow-sm flex items-start question-card">
-                                    <div class="subject-icon bg-subject-science mr-3">
-                                        <i class="fas fa-atom text-emerald-500"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-medium text-neutral-800">牛顿力学定律</h4>
-                                        <div class="flex items-center text-sm text-neutral-500 mt-1">
-                                            <span class="mr-3">3道题</span>
-                                            <span>难度: 基础</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
-                </div>
-            </div>
-            
-            <!-- 页面2：题库探索 -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 顶部搜索 -->
-                        <div class="mb-6">
-                            <div class="relative">
-                                <input type="text" placeholder="搜索知识点或题目..." class="w-full p-4 pl-12 rounded-2xl border border-neutral-300 focus:border-primary focus:ring-1 focus:ring-primary">
-                                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- 学科分类 -->
-                        <div class="mb-6">
-                            <h3 class="font-semibold text-neutral-800 mb-4">学科分类</h3>
-                            <div class="grid grid-cols-4 gap-3">
-                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-3 text-center">
-                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-calculator text-blue-600 text-xl"></i>
-                                    </div>
-                                    <span class="text-sm font-medium text-neutral-700">数学</span>
-                                </div>
-                                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-3 text-center">
-                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-atom text-green-600 text-xl"></i>
-                                    </div>
-                                    <span class="text-sm font-medium text-neutral-700">物理</span>
-                                </div>
-                                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-3 text-center">
-                                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-flask text-yellow-600 text-xl"></i>
-                                    </div>
-                                    <span class="text-sm font-medium text-neutral-700">化学</span>
-                                </div>
-                                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-3 text-center">
-                                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-dna text-red-600 text-xl"></i>
-                                    </div>
-                                    <span class="text-sm font-medium text-neutral-700">生物</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 知识点图谱 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-semibold text-neutral-800">知识点图谱</h3>
-                                <a href="#" class="text-sm text-primary font-medium">查看完整图谱</a>
-                            </div>
-                            <div class="bg-white rounded-2xl p-5 relative" style="height: 220px;">
-                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 knowledge-node" style="top: 40%; left: 50%;">
-                                    函数
-                                </div>
-                                <div class="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 knowledge-node" style="top: 30%; left: 30%;">
-                                    一次函数
-                                </div>
-                                <div class="absolute top-1/4 left-3/4 transform -translate-x-1/2 -translate-y-1/2 knowledge-node" style="top: 30%; left: 70%;">
-                                    三角函数
-                                </div>
-                                <div class="absolute top-3/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 knowledge-node" style="top: 70%; left: 30%;">
-                                    指数函数
-                                </div>
-                                <div class="absolute top-3/4 left-3/4 transform -translate-x-1/2 -translate-y-1/2 knowledge-node" style="top: 70%; left: 70%;">
-                                    对数函数
-                                </div>
-                                
-                                <!-- 连接线 -->
-                                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                    <line x1="50" y1="40" x2="30" y2="30" stroke="#E5E7EB" stroke-width="1"></line>
-                                    <line x1="50" y1="40" x2="70" y2="30" stroke="#E5E7EB" stroke-width="1"></line>
-                                    <line x1="50" y1="40" x2="30" y2="70" stroke="#E5E7EB" stroke-width="1"></line>
-                                    <line x1="50" y1="40" x2="70" y2="70" stroke="#E5E7EB" stroke-width="1"></line>
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        <!-- 热门题库 -->
-                        <div>
-                            <h3 class="font-semibold text-neutral-800 mb-4">热门题库</h3>
-                            <div class="space-y-3">
-                                <div class="bg-white rounded-xl p-4 flex items-center question-card">
-                                    <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fas fa-graduation-cap text-blue-600"></i>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h4 class="font-medium text-neutral-800">高考数学真题</h4>
-                                        <p class="text-sm text-neutral-500">近5年高考真题整理</p>
-                                    </div>
-                                    <div class="text-sm font-medium text-primary">开始</div>
-                                </div>
-                                <div class="bg-white rounded-xl p-4 flex items-center question-card">
-                                    <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mr-3">
-                                        <i class="fas fa-certificate text-purple-600"></i>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h4 class="font-medium text-neutral-800">教师资格证</h4>
-                                        <p class="text-sm text-neutral-500">教育知识与能力</p>
-                                    </div>
-                                    <div class="text-sm font-medium text-primary">开始</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
-                </div>
-            </div>
-            
-            <!-- 页面3：AI答题助手 -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 助手标题 -->
-                        <div class="flex items-center mb-6">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white mr-3">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-neutral-800">AI学习助手</h2>
-                                <p class="text-sm text-neutral-500">随时解答你的学习问题</p>
-                            </div>
-                        </div>
-                        
-                        <!-- 提问方式 -->
-                        <div class="grid grid-cols-2 gap-3 mb-6">
-                            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-center">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white mx-auto mb-2">
-                                    <i class="fas fa-camera"></i>
-                                </div>
-                                <span class="text-sm font-medium text-neutral-700">拍照提问</span>
-                            </div>
-                            <div class="bg-green-50 border border-green-100 rounded-2xl p-4 text-center">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white mx-auto mb-2">
-                                    <i class="fas fa-microphone"></i>
-                                </div>
-                                <span class="text-sm font-medium text-neutral-700">语音提问</span>
-                            </div>
-                        </div>
-                        
-                        <!-- 对话区域 -->
-                        <div class="mb-4">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-neutral-800">对话记录</h3>
-                                <button class="text-sm text-neutral-500">
-                                    <i class="fas fa-trash-alt mr-1"></i> 清空
-                                </button>
-                            </div>
-                            <div class="space-y-4">
-                                <!-- AI消息 -->
-                                <div class="flex">
-                                    <div class="flex-shrink-0 mr-2">
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <i class="fas fa-robot text-blue-600"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="chat-bubble-ai p-4 mb-1">
-                                            <p>你好！我是你的AI学习助手。你可以向我提问数学、物理、化学等学科问题，也可以上传题目照片让我帮你分析解答。</p>
-                                        </div>
-                                        <div class="text-xs text-neutral-500 pl-4">刚刚</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- 用户消息 -->
-                                <div class="flex justify-end">
-                                    <div class="flex-1 max-w-[85%]">
-                                        <div class="chat-bubble-user p-4 mb-1">
-                                            <p>这道三角函数题怎么做？已知sinθ=3/5，θ在第二象限，求cosθ和tanθ的值。</p>
-                                        </div>
-                                        <div class="text-xs text-neutral-500 text-right pr-4">刚刚</div>
-                                    </div>
-                                    <div class="flex-shrink-0 ml-2">
-                                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- AI回复 -->
-                                <div class="flex">
-                                    <div class="flex-shrink-0 mr-2">
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <i class="fas fa-robot text-blue-600"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="chat-bubble-ai p-4 mb-1">
-                                            <p class="font-medium mb-2">题目解析：</p>
-                                            <p class="mb-2">已知 sinθ = 3/5 且 θ 在第二象限，需要求 cosθ 和 tanθ。</p>
-                                            <p class="mb-2">步骤1：根据三角恒等式 sin²θ + cos²θ = 1</p>
-                                            <p class="mb-2">代入 sinθ 的值：(3/5)² + cos²θ = 1 → 9/25 + cos²θ = 1</p>
-                                            <p class="mb-2">步骤2：解方程求 cosθ</p>
-                                            <p>cos²θ = 1 - 9/25 = 16/25 → cosθ = ±4/5</p>
-                                            <p class="mt-2">因为 θ 在第二象限，cos值为负，所以 cosθ = -4/5</p>
-                                        </div>
-                                        <div class="text-xs text-neutral-500 pl-4">1分钟前</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 输入区域 -->
-                        <div class="bg-white rounded-full p-1 shadow-lg flex items-center">
-                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-neutral-500">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <input type="text" placeholder="输入你的问题..." class="flex-1 px-2 py-3 focus:outline-none">
-                            <button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
-                </div>
-            </div>
-            
-            <!-- 页面4：答题页面（拍照搜题） -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 拍照界面 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow">
-                                    <i class="fas fa-arrow-left text-neutral-700"></i>
-                                </button>
-                                <h3 class="font-semibold text-neutral-800">拍照搜题</h3>
-                                <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow">
-                                    <i class="fas fa-cog text-neutral-700"></i>
-                                </button>
-                            </div>
-                            
-                            <!-- 取景框 -->
-                            <div class="relative rounded-2xl overflow-hidden mb-4" style="height: 350px; background: linear-gradient(135deg, #3B82F6, #8B5CF6);">
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="border-2 border-white border-dashed rounded-xl w-4/5 h-64"></div>
-                                </div>
-                                <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                                    <i class="fas fa-expand mr-1"></i> 全题入框
-                                </div>
-                            </div>
-                            
-                            <!-- 拍照按钮 -->
-                            <div class="flex justify-center">
-                                <button class="w-16 h-16 rounded-full bg-white border-4 border-primary flex items-center justify-center">
-                                    <div class="w-10 h-10 rounded-full bg-primary"></div>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- 题目展示 -->
-                        <div class="bg-white rounded-2xl shadow-lg p-5 ai-response-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-blue-600"></i>
-                                </div>
-                                <div class="font-medium text-neutral-800">题目识别结果</div>
-                            </div>
-                            
-                            <div class="border border-neutral-200 rounded-xl p-4 mb-4">
-                                <p class="text-neutral-700">已知函数 \( f(x) = 2x^3 - 3x^2 - 12x + 5 \)，求函数在区间 \([-2, 3]\) 上的最大值和最小值。</p>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <div class="flex items-center text-sm font-medium text-neutral-600 mb-2">
-                                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> 解题思路
-                                </div>
-                                <p class="text-neutral-700">求函数在闭区间上的最值，需要先求导找到临界点，然后比较区间端点和临界点的函数值。</p>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <div class="flex items-center text-sm font-medium text-neutral-600 mb-2">
-                                    <i class="fas fa-list-ol text-blue-500 mr-2"></i> 解题步骤
-                                </div>
-                                <ol class="list-decimal pl-5 space-y-2 text-neutral-700">
-                                    <li>求导：\( f'(x) = 6x^2 - 6x - 12 \)</li>
-                                    <li>解 \( f'(x) = 0 \)：\( 6x^2 - 6x - 12 = 0 \) → \( x^2 - x - 2 = 0 \)</li>
-                                    <li>解得 \( x = 2 \) 或 \( x = -1 \)</li>
-                                    <li>计算端点及临界点函数值：f(-2), f(3), f(-1), f(2)</li>
-                                </ol>
-                            </div>
-                            
-                            <button class="w-full bg-primary hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition">
-                                查看完整解析
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
-                </div>
-            </div>
-            
-            <!-- 页面5：答题页面（选择题） -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 题目区域 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center mr-2">
-                                        <i class="fas fa-calculator text-blue-600"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold text-neutral-800">选择题</h3>
-                                        <p class="text-xs text-neutral-500">导数及其应用</p>
-                                    </div>
-                                </div>
-                                <div class="text-sm font-medium text-neutral-600">1/10</div>
-                            </div>
-                            
-                            <!-- 题目卡片 -->
-                            <div class="bg-white rounded-2xl p-5 shadow-md mb-6">
-                                <div class="text-sm text-neutral-500 mb-2">单选题</div>
-                                <p class="text-neutral-700 mb-4">已知函数 \( f(x) = x^3 - 3x^2 + 2 \)，则函数在点 x=1 处的导数是：</p>
-                                
-                                <!-- 选项 -->
-                                <div class="space-y-3">
-                                    <div class="answer-option border border-neutral-300 rounded-xl p-3 hover:border-primary hover:bg-blue-50 cursor-pointer">
-                                        <div class="flex items-center">
-                                            <div class="w-6 h-6 rounded-full border border-neutral-400 flex items-center justify-center mr-3">A</div>
-                                            <span>\( f'(1) = -3 \)</span>
-                                        </div>
-                                    </div>
-                                    <div class="answer-option border border-neutral-300 rounded-xl p-3 hover:border-primary hover:bg-blue-50 cursor-pointer">
-                                        <div class="flex items-center">
-                                            <div class="w-6 h-6 rounded-full border border-neutral-400 flex items-center justify-center mr-3">B</div>
-                                            <span>\( f'(1) = 0 \)</span>
-                                        </div>
-                                    </div>
-                                    <div class="answer-option border border-neutral-300 rounded-xl p-3 hover:border-primary hover:bg-blue-50 cursor-pointer">
-                                        <div class="flex items-center">
-                                            <div class="w-6 h-6 rounded-full border border-neutral-400 flex items-center justify-center mr-3">C</div>
-                                            <span>\( f'(1) = 3 \)</span>
-                                        </div>
-                                    </div>
-                                    <div class="answer-option border border-neutral-300 rounded-xl p-3 hover:border-primary hover:bg-blue-50 cursor-pointer">
-                                        <div class="flex items-center">
-                                            <div class="w-6 h-6 rounded-full border border-neutral-400 flex items-center justify-center mr-3">D</div>
-                                            <span>\( f'(1) = 6 \)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 答题控制 -->
-                            <div class="flex justify-between">
-                                <button class="px-5 py-3 border border-neutral-300 rounded-xl text-neutral-700 font-medium">
-                                    <i class="fas fa-question-circle mr-2"></i> 求助
-                                </button>
-                                <button class="px-5 py-3 bg-primary hover:bg-blue-700 text-white rounded-xl font-medium transition">
-                                    下一题 <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- AI解析 -->
-                        <div class="bg-white rounded-2xl p-5 shadow-md ai-response-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-blue-600"></i>
-                                </div>
-                                <div class="font-medium text-neutral-800">AI解析</div>
-                            </div>
-                            
-                            <div class="text-sm text-neutral-700">
-                                <p class="mb-3">本题考察导数计算的基本方法。正确解法是：</p>
-                                <p class="mb-2">1. 计算导数：\( f'(x) = 3x^2 - 6x \)</p>
-                                <p class="mb-3">2. 代入 x=1：\( f'(1) = 3(1)^2 - 6(1) = 3 - 6 = -3 \)</p>
-                                <p class="font-medium">所以正确答案是 A</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
-                </div>
-            </div>
-            
-            <!-- 页面6：学情报告 -->
-            <div class="iphone-frame">
-                <div class="iphone-notch"></div>
-                <div class="iphone-screen">
-                    <div class="p-4 safe-area-top">
-                        <!-- 个人中心头部 -->
-                        <div class="flex flex-col items-center mb-6">
-                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold mb-3">
-                                A
-                            </div>
-                            <h2 class="text-xl font-bold text-neutral-800">张同学</h2>
-                            <p class="text-sm text-neutral-500">高三 | 理科班</p>
-                        </div>
-                        
-                        <!-- 学习数据概览 -->
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="text-sm text-neutral-500 mb-1">累计学习</div>
-                                <div class="text-xl font-bold text-neutral-800">36小时</div>
-                            </div>
-                            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="text-sm text-neutral-500 mb-1">答题总数</div>
-                                <div class="text-xl font-bold text-neutral-800">258题</div>
-                            </div>
-                            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="text-sm text-neutral-500 mb-1">正确率</div>
-                                <div class="text-xl font-bold text-secondary">78%</div>
-                            </div>
-                            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="text-sm text-neutral-500 mb-1">掌握知识点</div>
-                                <div class="text-xl font-bold text-primary">42个</div>
-                            </div>
-                        </div>
-                        
-                        <!-- 学习报告 -->
-                        <div class="bg-white rounded-2xl p-5 shadow-md mb-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-semibold text-neutral-800">学习报告</h3>
-                                <a href="#" class="text-sm text-primary font-medium">查看详情</a>
-                            </div>
-                            
-                            <!-- 知识掌握度 -->
-                            <div class="mb-5">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-neutral-600">数学 - 函数</span>
-                                    <span class="font-medium">65%</span>
-                                </div>
-                                <div class="w-full bg-neutral-200 rounded-full h-2.5">
-                                    <div class="bg-blue-500 h-2.5 rounded-full" style="width: 65%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-5">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-neutral-600">物理 - 力学</span>
-                                    <span class="font-medium">82%</span>
-                                </div>
-                                <div class="w-full bg-neutral-200 rounded-full h-2.5">
-                                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 82%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-5">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-neutral-600">化学 - 反应原理</span>
-                                    <span class="font-medium">57%</span>
-                                </div>
-                                <div class="w-full bg-neutral-200 rounded-full h-2.5">
-                                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 57%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 错题本 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-neutral-800">错题本</h3>
-                                <a href="#" class="text-sm text-primary font-medium">查看全部</a>
-                            </div>
-                            <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-                                <div class="flex items-center p-4 border-b border-neutral-200">
-                                    <div class="flex-1">
-                                        <div class="font-medium text-neutral-800">三角函数求值</div>
-                                        <div class="text-sm text-neutral-500">错误次数: 3次</div>
-                                    </div>
-                                    <div class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">未掌握</div>
-                                </div>
-                                <div class="flex items-center p-4 border-b border-neutral-200">
-                                    <div class="flex-1">
-                                        <div class="font-medium text-neutral-800">导数应用题</div>
-                                        <div class="text-sm text-neutral-500">错误次数: 2次</div>
-                                    </div>
-                                    <div class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">待巩固</div>
-                                </div>
-                                <div class="flex items-center p-4">
-                                    <div class="flex-1">
-                                        <div class="font-medium text-neutral-800">立体几何证明</div>
-                                        <div class="text-sm text-neutral-500">错误次数: 1次</div>
-                                    </div>
-                                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">已掌握</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 设置项 -->
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center mr-3">
-                                        <i class="fas fa-moon text-indigo-500"></i>
-                                    </div>
-                                    <span>夜间模式</span>
-                                </div>
-                                <div>
-                                    <label class="switch">
-                                        <input type="checkbox">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center mr-3">
-                                        <i class="fas fa-bell text-yellow-500"></i>
-                                    </div>
-                                    <span>学习提醒</span>
-                                </div>
-                                <div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--底部tab -->
-                <div class="tab-bar">
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-home text-base"></i>
-                        <span class="text-xs mt-1">首页</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-book text-base"></i>
-                        <span class="text-xs mt-1">题库</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-neutral-500">
-                        <i class="fas fa-robot text-base"></i>
-                        <span class="text-xs mt-1">AI助手</span>
-                    </div>
-                    <div class="tab-item flex flex-col items-center text-primary">
-                        <i class="fas fa-user text-base"></i>
-                        <span class="text-xs mt-1">我的</span>
-                    </div>
-                </div>
-                <div class="fab-button">
-                    <i class="fas fa-camera text-xl"></i>
+        <!-- 移动端导航菜单 -->
+        <div class="md:hidden h-0 overflow-hidden transition-all duration-300" id="mobileMenu">
+            <div class="px-4 py-4 space-y-4 bg-white border-t border-neutral-200">
+                <a href="#home" class="block py-2 text-neutral-800 hover:text-primary font-medium">首页</a>
+                <a href="#services" class="block py-2 text-neutral-800 hover:text-primary font-medium">支付服务</a>
+                <a href="#process" class="block py-2 text-neutral-800 hover:text-primary font-medium">支付流程</a>
+                <a href="#fees" class="block py-2 text-neutral-800 hover:text-primary font-medium">费用说明</a>
+                <a href="#testimonials" class="block py-2 text-neutral-800 hover:text-primary font-medium">用户评价</a>
+                <a href="#faq" class="block py-2 text-neutral-800 hover:text-primary font-medium">常见问题</a>
+                <div class="flex space-x-4 pt-2">
+                    <button class="flex-1 py-2 text-primary font-medium hover:text-primary/80 transition border border-primary rounded-lg">登录</button>
+                    <button class="flex-1 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition btn-hover-effect">立即注册</button>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- 应用设计说明 -->
-        <div class="mt-16 p-6 bg-white rounded-2xl shadow-lg max-w-4xl mx-auto">
-            <h2 class="text-2xl font-bold text-neutral-800 mb-4">知学AI - 设计说明</h2>
-            
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-neutral-700 mb-2">设计理念</h3>
-                <p class="text-neutral-600">知学AI是一个融合AI技术与教育场景的学习平台，旨在通过智能化的学习辅助工具提升学习效率。设计遵循三层认知空间布局：</p>
-                <ul class="list-disc pl-5 mt-2 space-y-1 text-neutral-600">
-                    <li><strong class="text-neutral-800">互动层(z-100)</strong>：突出答题按钮、拍照搜题、AI助手等核心交互元素</li>
-                    <li><strong class="text-neutral-800">内容层(z-50)</strong>：清晰展示题目内容、解析步骤和学习数据</li>
-                    <li><strong class="text-neutral-800">背景层(z-0)</strong>：学科主题渐变背景降低干扰，营造学习氛围</li>
-                </ul>
+    <!-- 英雄区域 -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-gradientStart to-gradientEnd relative overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute inset-0 background-layer overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 -left-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 right-1/3 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="w-full md:w-1/2 text-center md:text-left">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white leading-tight mb-6 text-balance">
+                        全球留学支付<br/>
+                        <span class="text-white/90">安全、快捷、实惠</span>
+                    </h1>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-white/80 mb-8 max-w-xl mx-auto md:mx-0 text-balance">
+                        为留学生提供全方位的跨境支付解决方案，覆盖学费、生活费等多种支付场景，汇率透明，到账迅速。
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start interaction-layer">
+                        <button class="px-8 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-white/90 transition btn-hover-effect shadow-lg">
+                            开始支付
+                        </button>
+                        <button class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition btn-hover-effect">
+                            了解更多
+                        </button>
+                    </div>
+                    <div class="mt-10 flex items-center justify-center md:justify-start gap-6">
+                        <div class="flex -space-x-3">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                            <div class="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-white text-xs font-bold">
+                                +5k
+                            </div>
+                        </div>
+                        <div class="text-white/90">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-star text-yellow-300"></i>
+                                <i class="fas fa-star text-yellow-300"></i>
+                                <i class="fas fa-star text-yellow-300"></i>
+                                <i class="fas fa-star text-yellow-300"></i>
+                                <i class="fas fa-star-half-alt text-yellow-300"></i>
+                                <span class="ml-2 font-semibold">4.8/5</span>
+                            </div>
+                            <p class="text-sm">超过5000名留学生的信赖之选</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative">
+                    <div class="relative z-10 bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.02] content-layer">
+                        <img src="https://images.unsplash.com/photo-1621111844847-5068a31c2a08?auto=format&fit=crop&w=800&h=600" alt="留学支付" class="w-full h-auto rounded-t-3xl">
+                        <div class="p-6 md:p-8">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-xl font-bold text-neutral-800">留学学费支付</h3>
+                                <div class="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>安全可靠</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b border-neutral-200">
+                                    <span class="text-neutral-600">收款机构</span>
+                                    <span class="font-medium text-neutral-800">哈佛大学</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b border-neutral-200">
+                                    <span class="text-neutral-600">支付金额</span>
+                                    <span class="font-semibold text-xl text-neutral-900">$45,800.00</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b border-neutral-200">
+                                    <span class="text-neutral-600">汇率</span>
+                                    <span class="font-medium text-neutral-800">1 USD = 7.23 CNY</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-neutral-600">人民币支付</span>
+                                    <span class="font-semibold text-lg text-primary">¥331,134.00</span>
+                                </div>
+                            </div>
+                            <button class="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition btn-hover-effect interaction-layer">
+                                确认支付
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 装饰元素 -->
+                    <div class="absolute -z-10 top-6 -right-6 w-full h-full bg-gradient-to-br from-primary to-purple-600 rounded-3xl blur-xl opacity-30"></div>
+                </div>
             </div>
-            
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-neutral-700 mb-2">核心功能</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="border border-neutral-200 rounded-lg p-4">
-                        <div class="flex items-center mb-2">
-                            <div class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center text-blue-600 mr-2">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <h4 class="font-medium">拍照搜题</h4>
-                        </div>
-                        <p class="text-sm text-neutral-600">通过OCR技术识别题目，提供分步解析和解题思路，支持数学公式识别[4,7](@ref)</p>
+        </div>
+    </section>
+
+    <!-- 合作伙伴 -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <p class="text-center text-neutral-500 mb-8">值得信赖的合作伙伴</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-70">
+                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+                <img src="https://images.unsplash.com/photo-1579153965479-43e45f876264?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+                <img src="https://images.unsplash.com/photo-1630521950197-83260e58d548?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+                <img src="https://images.unsplash.com/photo-1618478594231-6a06e6f0b336?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+                <img src="https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=200&h=80" alt="合作伙伴" class="h-8 object-contain grayscale hover:grayscale-0 transition duration-300">
+            </div>
+        </div>
+    </section>
+
+    <!-- 支付服务 -->
+    <section id="services" class="py-20 bg-neutral-100">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-neutral-900 mb-4">全方位留学支付服务</h2>
+                <p class="text-lg text-neutral-600">我们提供多种支付方式和服务，满足留学生在不同场景下的支付需求</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 服务1 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6 text-primary text-2xl">
+                        <i class="fas fa-university"></i>
                     </div>
-                    <div class="border border-neutral-200 rounded-lg p-4">
-                        <div class="flex items-center mb-2">
-                            <div class="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center text-green-600 mr-2">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <h4 class="font-medium">AI智能辅导</h4>
-                        </div>
-                        <p class="text-sm text-neutral-600">支持多轮追问的AI对话系统，理解上下文提供精准解答[9,10](@ref)</p>
+                    <h3 class="text-xl font-bold text-neutral-800 mb-3">学费支付</h3>
+                    <p class="text-neutral-600 mb-6">安全、快捷地支付海外院校学费，支持全球主要国家和地区的高校，到账时间短，手续费透明。</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>支持全球200+国家和地区</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>最快1个工作日到账</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>0手续费优惠活动</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-flex items-center text-primary font-medium hover:underline interaction-layer">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- 服务2 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6 text-green-600 text-2xl">
+                        <i class="fas fa-wallet"></i>
                     </div>
-                    <div class="border border-neutral-200 rounded-lg p-4">
-                        <div class="flex items-center mb-2">
-                            <div class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center text-purple-600 mr-2">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <h4 class="font-medium">知识点图谱</h4>
-                        </div>
-                        <p class="text-sm text-neutral-600">可视化展示知识点关联关系，精准定位薄弱环节[2](@ref)</p>
+                    <h3 class="text-xl font-bold text-neutral-800 mb-3">生活费转账</h3>
+                    <p class="text-neutral-600 mb-6">向海外留学生活账户转账，支持多种币种，汇率优惠，满足日常生活开销需求。</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>实时汇率，透明定价</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>支持Visa/Mastercard</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>24/7在线客服支持</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-flex items-center text-primary font-medium hover:underline interaction-layer">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- 服务3 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6 text-purple-600 text-2xl">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="border border-neutral-200 rounded-lg p-4">
-                        <div class="flex items-center mb-2">
-                            <div class="w-8 h-8 rounded-md bg-yellow-100 flex items-center justify-center text-yellow-600 mr-2">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h4 class="font-medium">学情分析</h4>
+                    <h3 class="text-xl font-bold text-neutral-800 mb-3">留学保证金</h3>
+                    <p class="text-neutral-600 mb-6">提供留学签证所需的资金证明服务，流程简单，快速办理，助您顺利获得签证。</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>符合使馆要求的资金证明</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>最快3个工作日完成</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>专业顾问一对一服务</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-flex items-center text-primary font-medium hover:underline interaction-layer">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 支付流程 -->
+    <section id="process" class="py-20 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-neutral-900 mb-4">简单四步，完成支付</h2>
+                <p class="text-lg text-neutral-600">我们简化了留学支付流程，让您足不出户即可完成跨境支付</p>
+            </div>
+
+            <div class="relative max-w-5xl mx-auto">
+                <!-- 连接线 -->
+                <div class="hidden md:block absolute top-1/4 left-0 right-0 h-1 bg-primary/20 -z-10"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                    <!-- 步骤1 -->
+                    <div class="text-center content-layer">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg interaction-layer">
+                            1
                         </div>
-                        <p class="text-sm text-neutral-600">多维度学习报告，追踪学习进度与知识掌握情况[5,8](@ref)</p>
+                        <h3 class="text-lg font-bold text-neutral-800 mb-3">创建订单</h3>
+                        <p class="text-neutral-600">填写收款机构、金额等信息，选择支付方式</p>
+                        <div class="mt-4 text-primary">
+                            <i class="fas fa-file-invoice-dollar text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- 步骤2 -->
+                    <div class="text-center content-layer">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg interaction-layer">
+                            2
+                        </div>
+                        <h3 class="text-lg font-bold text-neutral-800 mb-3">确认汇率</h3>
+                        <p class="text-neutral-600">查看实时汇率和手续费，确认支付金额</p>
+                        <div class="mt-4 text-primary">
+                            <i class="fas fa-exchange-alt text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- 步骤3 -->
+                    <div class="text-center content-layer">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg interaction-layer">
+                            3
+                        </div>
+                        <h3 class="text-lg font-bold text-neutral-800 mb-3">完成支付</h3>
+                        <p class="text-neutral-600">通过银行卡、支付宝等方式完成支付</p>
+                        <div class="mt-4 text-primary">
+                            <i class="fas fa-credit-card text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- 步骤4 -->
+                    <div class="text-center content-layer">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg interaction-layer">
+                            4
+                        </div>
+                        <h3 class="text-lg font-bold text-neutral-800 mb-3">款项到账</h3>
+                        <p class="text-neutral-600">资金快速到账，收到支付确认通知</p>
+                        <div class="mt-4 text-primary">
+                            <i class="fas fa-check-circle text-xl"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div>
-                <h3 class="text-lg font-semibold text-neutral-700 mb-2">技术实现</h3>
-                <div class="border border-neutral-200 rounded-lg p-4">
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-1 mr-2">
-                                <i class="fas fa-check text-white text-xs"></i>
-                            </div>
-                            <span class="text-neutral-600"><strong>前端框架</strong>：TailwindCSS + FontAwesome图标库，实现响应式设计</span>
+
+            <div class="mt-16 text-center interaction-layer">
+                <button class="px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition btn-hover-effect shadow-lg">
+                    开始支付流程
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 费用说明 -->
+    <section id="fees" class="py-20 bg-neutral-100 relative overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl background-layer"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl background-layer"></div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-neutral-900 mb-4">透明费用结构</h2>
+                <p class="text-lg text-neutral-600">我们承诺费用透明，无隐藏收费，让您的每一分钱都花得明明白白</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- 标准套餐 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-neutral-200 payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-neutral-800 mb-2">标准套餐</h3>
+                        <p class="text-neutral-600 mb-4">适合一般留学支付需求</p>
+                        <div class="text-3xl font-bold text-neutral-900 mb-1">0<span class="text-lg font-normal text-neutral-500">手续费</span></div>
+                        <p class="text-sm text-neutral-500">限时优惠</p>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>标准汇率</span>
                         </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-1 mr-2">
-                                <i class="fas fa-check text-white text-xs"></i>
-                            </div>
-                            <span class="text-neutral-600"><strong>AI能力</strong>：集成自然语言处理(NLP)和OCR技术，支持题目理解和解答[1,4](@ref)</span>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>3-5个工作日到账</span>
                         </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-1 mr-2">
-                                <i class="fas fa-check text-white text-xs"></i>
-                            </div>
-                            <span class="text-neutral-600"><strong>交互设计</strong>：遵循Ant Design X流畅自然原则，确保对话连贯性和自然性[9](@ref)</span>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>基本客服支持</span>
                         </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-1 mr-2">
-                                <i class="fas fa-check text-white text-xs"></i>
-                            </div>
-                            <span class="text-neutral-600"><strong>多题型支持</strong>：选择题、填空题、简答题、编程题等全题型覆盖[1,3](@ref)</span>
+                        <li class="flex items-center text-neutral-400">
+                            <i class="fas fa-times text-neutral-300 mr-3"></i>
+                            <span>优先处理</span>
                         </li>
+                        <li class="flex items-center text-neutral-400">
+                            <i class="fas fa-times text-neutral-300 mr-3"></i>
+                            <span>定制汇率</span>
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary/5 transition btn-hover-effect interaction-layer">
+                        选择此套餐
+                    </button>
+                </div>
+
+                <!-- 快捷套餐 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-primary relative payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300 transform md:-translate-y-4">
+                    <div class="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-4 py-1 rounded-bl-lg rounded-tr-lg interaction-layer">
+                        最受欢迎
+                    </div>
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-neutral-800 mb-2">快捷套餐</h3>
+                        <p class="text-neutral-600 mb-4">适合紧急支付需求</p>
+                        <div class="text-3xl font-bold text-neutral-900 mb-1">0.5<span class="text-lg font-normal text-neutral-500">%手续费</span></div>
+                        <p class="text-sm text-neutral-500">最低¥50</p>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>优惠汇率</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>1-2个工作日到账</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>优先客服支持</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>优先处理</span>
+                        </li>
+                        <li class="flex items-center text-neutral-400">
+                            <i class="fas fa-times text-neutral-300 mr-3"></i>
+                            <span>定制汇率</span>
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition btn-hover-effect interaction-layer shadow-lg">
+                        选择此套餐
+                    </button>
+                </div>
+
+                <!-- 尊享套餐 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-neutral-200 payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-neutral-800 mb-2">尊享套餐</h3>
+                        <p class="text-neutral-600 mb-4">适合大额支付需求</p>
+                        <div class="text-3xl font-bold text-neutral-900 mb-1">0.3<span class="text-lg font-normal text-neutral-500">%手续费</span></div>
+                        <p class="text-sm text-neutral-500">最低¥100</p>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>定制优惠汇率</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>1个工作日内到账</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>专属客户经理</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>优先处理</span>
+                        </li>
+                        <li class="flex items-center text-neutral-700">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>定制汇率</span>
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary/5 transition btn-hover-effect interaction-layer">
+                        选择此套餐
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户评价 -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-neutral-900 mb-4">用户怎么说</h2>
+                <p class="text-lg text-neutral-600">来自真实用户的评价，分享他们使用GlobalPay的体验</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- 评价1 -->
+                <div class="bg-neutral-50 rounded-2xl p-8 shadow-md payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-14 h-14 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-neutral-800">李同学</h4>
+                            <p class="text-neutral-500 text-sm">美国 · 哈佛大学</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-neutral-700 italic mb-4">"使用GlobalPay支付学费非常方便，汇率比银行优惠，到账速度也很快。客服很专业，解答了我很多问题。强烈推荐给留学生们！"</p>
+                    <p class="text-sm text-neutral-500">2023年9月</p>
+                </div>
+
+                <!-- 评价2 -->
+                <div class="bg-neutral-50 rounded-2xl p-8 shadow-md payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-14 h-14 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-neutral-800">张同学</h4>
+                            <p class="text-neutral-500 text-sm">英国 · 伦敦大学学院</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-neutral-700 italic mb-4">"申请签证时需要保证金证明，GlobalPay的服务非常专业，三天就办好了所有手续，帮了我大忙。手续费也很合理。"</p>
+                    <p class="text-sm text-neutral-500">2023年8月</p>
+                </div>
+
+                <!-- 评价3 -->
+                <div class="bg-neutral-50 rounded-2xl p-8 shadow-md payment-card content-layer hover:z-50 hover:opacity-100 transition-all duration-300">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&h=100" alt="用户头像" class="w-14 h-14 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-neutral-800">王同学</h4>
+                            <p class="text-neutral-500 text-sm">澳大利亚 · 悉尼大学</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-neutral-700 italic mb-4">"生活费转账用GlobalPay太划算了，汇率好，到账快，而且操作非常简单。APP界面很清晰，第一次用就上手了。"</p>
+                    <p class="text-sm text-neutral-500">2023年10月</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="faq" class="py-20 bg-neutral-100">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-neutral-900 mb-4">常见问题</h2>
+                <p class="text-lg text-neutral-600">解答您关于留学支付的常见疑问</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-4 content-layer">
+                <!-- 问题1 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm faq-item cursor-pointer transition-all duration-300 interaction-layer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-neutral-800">GlobalPay支持哪些国家和地区的支付？</h3>
+                        <i class="fas fa-chevron-down text-neutral-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="mt-4 text-neutral-600 hidden faq-answer">
+                        GlobalPay支持全球200多个国家和地区的跨境支付，包括美国、英国、加拿大、澳大利亚、新西兰、欧盟各国、日本、韩国等主要留学目的地国家。具体支持的国家和地区列表可以在我们的官网查询。
+                    </div>
+                </div>
+
+                <!-- 问题2 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm faq-item cursor-pointer transition-all duration-300 interaction-layer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-neutral-800">支付后多久能到账？</h3>
+                        <i class="fas fa-chevron-down text-neutral-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="mt-4 text-neutral-600 hidden faq-answer">
+                        到账时间取决于您选择的支付套餐：标准套餐通常需要3-5个工作日，快捷套餐需要1-2个工作日，尊享套餐可在1个工作日内到账。具体到账时间还可能受到收款银行处理时间、国际节假日等因素的影响。
+                    </div>
+                </div>
+
+                <!-- 问题3 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm faq-item cursor-pointer transition-all duration-300 interaction-layer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-neutral-800">如何保障支付安全？</h3>
+                        <i class="fas fa-chevron-down text-neutral-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="mt-4 text-neutral-600 hidden faq-answer">
+                        GlobalPay采用银行级别的加密技术保护您的支付信息和资金安全。我们拥有严格的风控系统，对每一笔交易进行实时监控和风险评估。同时，我们还提供交易短信通知、双重身份验证等安全措施，确保您的资金安全。
+                    </div>
+                </div>
+
+                <!-- 问题4 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm faq-item cursor-pointer transition-all duration-300 interaction-layer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-neutral-800">可以使用哪些支付方式？</h3>
+                        <i class="fas fa-chevron-down text-neutral-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="mt-4 text-neutral-600 hidden faq-answer">
+                        GlobalPay支持多种支付方式，包括国内银行卡（借记卡/信用卡）、支付宝、微信支付等。具体支持的支付方式可能因地区和支付金额而有所不同，您可以在创建订单时查看可用的支付方式。
+                    </div>
+                </div>
+
+                <!-- 问题5 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm faq-item cursor-pointer transition-all duration-300 interaction-layer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-neutral-800">支付后可以取消吗？</h3>
+                        <i class="fas fa-chevron-down text-neutral-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="mt-4 text-neutral-600 hidden faq-answer">
+                        一旦支付完成，通常无法直接取消交易。但如果您遇到特殊情况，如支付错误、重复支付等，可以立即联系我们的客服团队，我们会尽力协助您解决问题。请注意，国际跨境支付涉及多个环节，取消交易可能需要较长时间，且可能产生额外费用。
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center interaction-layer">
+                <p class="text-neutral-600 mb-4">还有其他问题？</p>
+                <button class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition btn-hover-effect shadow-md">
+                    联系客服
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA区域 -->
+    <section class="py-16 bg-gradient-to-br from-gradientStart to-gradientEnd text-white relative overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute inset-0 background-layer overflow-hidden">
+            <div class="absolute top-1/4 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10 text-center max-w-4xl mx-auto">
+            <h2 class="text-[clamp(1.75rem,4vw,2.5rem)] font-bold mb-6 text-balance">开始您的留学支付之旅</h2>
+            <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto text-balance">
+                立即注册GlobalPay账户，享受安全、快捷、实惠的跨境支付服务，让您的留学之旅更加顺畅。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center interaction-layer">
+                <button class="px-8 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-white/90 transition btn-hover-effect shadow-lg">
+                    立即注册
+                </button>
+                <button class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition btn-hover-effect">
+                    了解更多
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-neutral-900 text-neutral-400 pt-16 pb-8">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="text-xl font-bold text-white flex items-center mb-6">
+                        <i class="fas fa-globe-americas mr-2"></i>
+                        <span>GlobalPay</span>
+                    </div>
+                    <p class="mb-6">全球领先的留学支付解决方案提供商，为留学生提供安全、快捷、实惠的跨境支付服务。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-white hover:bg-primary transition duration-300 interaction-layer">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-white hover:bg-primary transition duration-300 interaction-layer">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-white hover:bg-primary transition duration-300 interaction-layer">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-6">支付服务</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">学费支付</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">生活费转账</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">留学保证金</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">汇率查询</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">支付流程</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-6">关于我们</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">公司介绍</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">合作伙伴</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">新闻动态</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">加入我们</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">联系我们</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-6">客户支持</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center"><i class="fas fa-phone-alt mr-3 text-primary"></i> 400-123-4567</li>
+                        <li class="flex items-center"><i class="fas fa-envelope mr-3 text-primary"></i> support@globalpay.com</li>
+                        <li class="flex items-center"><i class="fas fa-clock mr-3 text-primary"></i> 9:00-18:00 (工作日)</li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">帮助中心</a></li>
+                        <li><a href="#" class="hover:text-primary transition duration-300 interaction-layer">常见问题</a></li>
                     </ul>
                 </div>
             </div>
+
+            <div class="pt-8 border-t border-neutral-800 text-center">
+                <p class="mb-4">© 2023 GlobalPay. 保留所有权利。</p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <a href="#" class="hover:text-primary transition duration-300 interaction-layer">隐私政策</a>
+                    <a href="#" class="hover:text-primary transition duration-300 interaction-layer">服务条款</a>
+                    <a href="#" class="hover:text-primary transition duration-300 interaction-layer">法律声明</a>
+                    <a href="#" class="hover:text-primary transition duration-300 interaction-layer">风险提示</a>
+                    <p>ICP备案号：粤ICP备12345678号</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 z-50 interaction-layer">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // 移动端菜单切换
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let menuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            if (!menuOpen) {
+                mobileMenu.style.height = 'auto';
+                const height = mobileMenu.offsetHeight + 'px';
+                mobileMenu.style.height = '0';
+                setTimeout(() => {
+                    mobileMenu.style.height = height;
+                }, 0);
+                menuBtn.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+            } else {
+                mobileMenu.style.height = '0';
+                menuBtn.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            }
+            menuOpen = !menuOpen;
+        });
+
+        // 滚动监听 - 导航栏样式变化
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const backToTop = document.getElementById('backToTop');
+
+            if (window.scrollY > 50) {
+                header.classList.add('py-2');
+                header.classList.remove('py-4');
+                header.classList.add('shadow-md');
+
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                header.classList.add('py-4');
+                header.classList.remove('py-2');
+                header.classList.remove('shadow-md');
+
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // 回到顶部功能
+        document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // FAQ折叠功能
+        function toggleFaq(element) {
+            const answer = element.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+
+            if (answer.classList.contains('hidden')) {
+                answer.classList.remove('hidden');
+                icon.classList.add('transform', 'rotate-180');
+            } else {
+                answer.classList.add('hidden');
+                icon.classList.remove('transform', 'rotate-180');
+            }
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // 如果是移动端菜单点击，关闭菜单
+                    if (menuOpen) {
+                        mobileMenu.style.height = '0';
+                        menuBtn.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+                        menuOpen = false;
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
