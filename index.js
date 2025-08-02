@@ -26,7 +26,6 @@ const SYSTEM_PROMPT = `
    }
 3. 如果任务未完成，返回中间指令或继续调用工具。
 4. 如果任务完成，返回纯文本答案，格式为 "FINAL_ANSWER: 答案"。
-5. 确保正确处理中文字符，特别是在文件路径或内容中。
 
 可用工具：
 - weather_api: 获取城市天气数据。参数: { "city": "city_name" }
@@ -54,7 +53,8 @@ const TOOLS = {
     const { city } = parameters;
     try {
       // 替换为真实天气 API（如 OpenWeatherMap）
-      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=your-weather-api-key`);
+      const response = await axios.get(`https://restapi.amap.com/v3/weather/weatherInfo?city=${city}&key=8070c4e0d1676e5368441e2e6ab8fee8`);
+     console.log(response.data);
       return {
         status: 'success',
         data: response.data || { temperature: 25, humidity: 60, condition: 'Sunny' }
@@ -155,7 +155,7 @@ async function callLLM(messages) {
     const response = await axios.post(
       API_URL,
       {
-        model: 'qwen3:8b',
+        model: 'qwen3:4b',
         messages,
         max_tokens: 1000,
         temperature: 0.7,
@@ -220,7 +220,7 @@ async function runAgent(query, maxIterations = 5) {
     const parsedOutput = parseLLMOutput(llmOutput);
     console.log(`Parsed LLM Output: ${JSON.stringify(parsedOutput)}`);
 
-    if (parsedOutput.type === 'final_answer') {
+    if (parsedOutput.type === 'final_answer'||parsedOutput.type !== 'tool_call') {
       return parsedOutput.content;
     } else if (parsedOutput.type === 'tool_call') {
       const { tool, parameters } = parsedOutput;
@@ -253,7 +253,7 @@ async function runAgent(query, maxIterations = 5) {
 // 示例运行
 async function main() {
   try {
-    const query = '获取网站http://WWW.BAIDU.COM 的内容';
+    const query = '今天温州天气如何？';
     const result = await runAgent(query);
     console.log(`Final Result: ${result}`);
   } catch (error) {
